@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>디저트 랜덤 추천</title>
+  <style>
+    :root {
+      --bg-top: #fff6ed;
+      --bg-bottom: #ffc9b8;
+      --card: rgba(255, 251, 247, 0.82);
+      --panel: rgba(255, 255, 255, 0.72);
+      --line: rgba(140, 67, 88, 0.12);
+      --line-soft: rgba(140, 67, 88, 0.08);
+      --accent: #f28f79;
+      --accent-strong: #8c4358;
+      --text: #4a2f27;
+      --text-soft: rgba(74, 47, 39, 0.74);
+      --shadow: 0 26px 70px rgba(74, 47, 39, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px;
+      display: grid;
+      place-items: center;
+      font-family: "Trebuchet MS", "Malgun Gothic", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.85), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(242, 143, 121, 0.28), transparent 32%),
+        linear-gradient(145deg, var(--bg-top), var(--bg-bottom));
+    }
+
+    .app {
+      width: min(980px, 100%);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .hero {
+      padding: 42px 30px 24px;
+      color: #fff8f2;
+      background: linear-gradient(135deg, rgba(242, 143, 121, 0.96), rgba(140, 67, 88, 0.94));
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.92;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.1rem, 6vw, 4rem);
+      line-height: 0.96;
+    }
+
+    .hero p {
+      margin: 16px 0 0;
+      max-width: 580px;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .content {
+      padding: 28px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .panel {
+      padding: 24px;
+      border-radius: 24px;
+      background: var(--panel);
+      border: 1px solid var(--line-soft);
+      animation: rise 0.35s ease;
+    }
+
+    .label {
+      margin: 0 0 8px;
+      color: var(--accent-strong);
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .title {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+    }
+
+    .description {
+      margin: 12px 0 0;
+      line-height: 1.7;
+      color: var(--text-soft);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .tag {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(242, 143, 121, 0.14);
+      color: var(--accent-strong);
+      font-weight: 700;
+      font-size: 0.94rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 20px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    .primary {
+      color: #fff9f4;
+      background: linear-gradient(135deg, var(--accent), #ffb36d);
+      box-shadow: 0 12px 26px rgba(242, 143, 121, 0.28);
+    }
+
+    .secondary {
+      color: var(--accent-strong);
+      background: rgba(140, 67, 88, 0.1);
+    }
+
+    .hint {
+      margin: 0;
+      line-height: 1.65;
+      color: var(--text-soft);
+    }
+
+    .subgrid {
+      margin-top: 18px;
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .item {
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255, 246, 238, 0.96);
+      border: 1px solid rgba(242, 143, 121, 0.14);
+      animation: rise 0.35s ease;
+    }
+
+    .item h3 {
+      margin: 0;
+      font-size: 1.18rem;
+    }
+
+    .item p {
+      margin: 10px 0 0;
+      line-height: 1.65;
+      color: var(--text-soft);
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 14px;
+      }
+
+      .hero,
+      .content,
+      .panel,
+      .item {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <p class="eyebrow">Dessert Picker</p>
+      <h1>오늘의 디저트,<br>랜덤으로 골라보자.</h1>
+      <p>먼저 디저트 대주제를 하나 추천하고, 그 안에서 소분류 메뉴를 다시 뽑아주는 방식입니다. 각 단계마다 다시 추천받기 버튼을 눌러 다른 결과로 바로 바꿀 수 있습니다.</p>
+    </section>
+
+    <section class="content">
+      <article class="panel">
+        <p class="label">1단계 · 대주제 추천</p>
+        <h2 class="title" id="theme-name"></h2>
+        <p class="description" id="theme-description"></p>
+        <div class="tags" id="theme-tags"></div>
+        <div class="actions">
+          <button class="primary" id="reroll-theme">다시 추천받기</button>
+          <button class="secondary" id="choose-theme">이 주제로 소분류 보기</button>
+        </div>
+      </article>
+
+      <article class="panel">
+        <p class="label">2단계 · 소분류 추천</p>
+        <p class="hint" id="sub-copy">먼저 위에서 대주제를 고른 뒤 소분류 추천을 받아보세요.</p>
+        <div class="subgrid" id="subgrid"></div>
+        <div class="actions" id="sub-actions" hidden>
+          <button class="primary" id="reroll-sub">소분류 다시 추천받기</button>
+          <button class="secondary" id="reroll-all">처음부터 다시 추천받기</button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const themes = [
+      {
+        name: "차갑고 시원한 디저트",
+        description: "입안을 산뜻하게 정리해 주는 계열입니다. 더운 날이나 가볍게 마무리하고 싶을 때 잘 맞습니다.",
+        tags: ["상큼함", "시원함", "여름 무드"],
+        items: [
+          { name: "젤라또", text: "쫀쫀한 질감과 진한 풍미가 중심인 차가운 디저트입니다." },
+          { name: "과일 빙수", text: "과일 토핑을 올려 산뜻하게 즐기기 좋은 대표 선택입니다." },
+          { name: "요거트 아이스크림", text: "가벼운 산미가 있어 부담 없이 먹기 좋습니다." },
+          { name: "푸딩 파르페", text: "차가운 크림과 푸딩이 층층이 쌓여 만족감이 큽니다." }
+        ]
+      },
+      {
+        name: "폭신하고 부드러운 디저트",
+        description: "식감이 편안하고 포근한 계열입니다. 커피나 차와 곁들이기 좋고 무난하게 만족도가 높습니다.",
+        tags: ["부드러움", "포근함", "카페 조합"],
+        items: [
+          { name: "수플레 팬케이크", text: "구름 같은 식감으로 가볍게 즐기기 좋은 메뉴입니다." },
+          { name: "생크림 롤케이크", text: "부드러운 시트와 크림 조합이 안정적입니다." },
+          { name: "치즈 무스 케이크", text: "입에서 사르르 녹는 질감이 강점인 디저트입니다." },
+          { name: "우유 푸딩", text: "담백하면서도 은은한 단맛이 편안하게 남습니다." }
+        ]
+      },
+      {
+        name: "꾸덕하고 진한 디저트",
+        description: "한 입만으로도 존재감이 큰 묵직한 계열입니다. 진한 단맛이나 초코, 치즈 계열을 원할 때 적합합니다.",
+        tags: ["진한 맛", "꾸덕함", "높은 만족감"],
+        items: [
+          { name: "브라우니", text: "초콜릿의 밀도감이 강하게 느껴지는 클래식한 선택입니다." },
+          { name: "바스크 치즈케이크", text: "짙은 치즈 풍미와 탄 향이 잘 살아 있습니다." },
+          { name: "가토 쇼콜라", text: "깊고 묵직한 초코 맛을 선호할 때 잘 맞습니다." },
+          { name: "티라미수", text: "커피 향과 크림의 농도가 균형 있게 어우러집니다." }
+        ]
+      },
+      {
+        name: "바삭하고 손이 가는 디저트",
+        description: "식감이 또렷하고 가볍게 집어 먹기 좋은 계열입니다. 혼자 먹어도 좋고 같이 나눠 먹기에도 좋습니다.",
+        tags: ["바삭함", "간식형", "공유하기 좋음"],
+        items: [
+          { name: "크루아상", text: "겹겹이 살아 있는 결 덕분에 씹는 재미가 분명합니다." },
+          { name: "에그타르트", text: "바삭한 타르트지와 촉촉한 필링의 대비가 좋습니다." },
+          { name: "츄러스", text: "겉은 바삭하고 안은 쫄깃해 간식 만족도가 높습니다." },
+          { name: "쿠키 샌드", text: "바삭한 쿠키 사이 크림 조합으로 식감이 풍부합니다." }
+        ]
+      },
+      {
+        name: "과일 향이 살아 있는 디저트",
+        description: "단맛 속에 향과 산미가 살아 있는 계열입니다. 비교적 가볍고 산뜻한 마무리를 원할 때 좋습니다.",
+        tags: ["과일향", "산뜻함", "가벼운 단맛"],
+        items: [
+          { name: "딸기 타르트", text: "달콤한 크림과 딸기의 상큼함이 또렷하게 살아 있습니다." },
+          { name: "망고 크레이프", text: "부드러운 시트와 열대과일 향이 자연스럽게 어울립니다." },
+          { name: "레몬 파운드케이크", text: "은은한 산미가 입맛을 깔끔하게 정리해 줍니다." },
+          { name: "복숭아 판나코타", text: "부드러운 크림 계열에 과일 향을 더한 스타일입니다." }
+        ]
+      },
+      {
+        name: "한입 간식형 디저트",
+        description: "부담 없이 여러 개 집어 먹기 좋은 계열입니다. 이동하면서 먹거나 가볍게 당 충전하기 좋습니다.",
+        tags: ["한입 크기", "가벼운 만족감", "편하게 먹기"],
+        items: [
+          { name: "마카롱", text: "쫀득한 꼬끄와 필링 조합으로 맛 변주가 다양합니다." },
+          { name: "도넛", text: "기본형부터 필링형까지 선택 폭이 넓은 디저트입니다." },
+          { name: "휘낭시에", text: "버터 향이 진하고 한입 디저트로 완성도가 높습니다." },
+          { name: "미니 타르트", text: "작은 크기 안에 식감과 풍미를 모두 담기 좋습니다." }
+        ]
+      }
+    ];
+
+    const themeName = document.getElementById("theme-name");
+    const themeDescription = document.getElementById("theme-description");
+    const themeTags = document.getElementById("theme-tags");
+    const subCopy = document.getElementById("sub-copy");
+    const subgrid = document.getElementById("subgrid");
+    const subActions = document.getElementById("sub-actions");
+
+    let currentTheme = -1;
+
+    function randomIndex(length, except = -1) {
+      if (length <= 1) return 0;
+      let next = Math.floor(Math.random() * length);
+      while (next === except) {
+        next = Math.floor(Math.random() * length);
+      }
+      return next;
+    }
+
+    function renderTheme(index) {
+      const theme = themes[index];
+      currentTheme = index;
+      themeName.textContent = theme.name;
+      themeDescription.textContent = theme.description;
+      themeTags.innerHTML = theme.tags.map((tag) => `<span class="tag"># ${tag}</span>`).join("");
+      subCopy.textContent = `"${theme.name}" 안에서 소분류 추천을 받아보세요.`;
+      subgrid.innerHTML = "";
+      subActions.hidden = true;
+    }
+
+    function rerollTheme() {
+      renderTheme(randomIndex(themes.length, currentTheme));
+    }
+
+    function pickSubItems() {
+      const theme = themes[currentTheme];
+      const results = [...theme.items].sort(() => Math.random() - 0.5).slice(0, 3);
+
+      subgrid.innerHTML = results.map((item) => `
+        <section class="item">
+          <h3>${item.name}</h3>
+          <p>${item.text}</p>
+        </section>
+      `).join("");
+
+      subCopy.textContent = `"${theme.name}" 안에서 뽑은 소분류 추천입니다. 마음에 안 들면 다시 추천받아 보세요.`;
+      subActions.hidden = false;
+    }
+
+    document.getElementById("reroll-theme").addEventListener("click", rerollTheme);
+    document.getElementById("choose-theme").addEventListener("click", pickSubItems);
+    document.getElementById("reroll-sub").addEventListener("click", pickSubItems);
+    document.getElementById("reroll-all").addEventListener("click", rerollTheme);
+
+    renderTheme(randomIndex(themes.length));
+  </script>
+</body>
+</html>

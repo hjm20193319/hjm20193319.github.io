@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오늘의 디저트 추천</title>
+  <style>
+    :root {
+      --cream: #fff7ed;
+      --peach: #ffd6ba;
+      --coral: #f58f7c;
+      --berry: #8f3b5f;
+      --choco: #4a2d24;
+      --card: rgba(255, 250, 245, 0.82);
+      --shadow: 0 24px 60px rgba(74, 45, 36, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Malgun Gothic", sans-serif;
+      color: var(--choco);
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.8), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(245, 143, 124, 0.28), transparent 30%),
+        linear-gradient(145deg, #fff8ef 0%, #ffd8c2 48%, #ffc1b4 100%);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: min(920px, 100%);
+      background: var(--card);
+      border: 1px solid rgba(143, 59, 95, 0.12);
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(14px);
+    }
+
+    .hero {
+      padding: 40px 28px 20px;
+      background:
+        linear-gradient(135deg, rgba(245, 143, 124, 0.95), rgba(143, 59, 95, 0.92)),
+        var(--coral);
+      color: #fffaf4;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 6vw, 4.2rem);
+      line-height: 0.95;
+    }
+
+    .hero p {
+      margin: 16px 0 0;
+      max-width: 520px;
+      font-size: 1.02rem;
+      line-height: 1.6;
+    }
+
+    .content {
+      padding: 28px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.72);
+      border-radius: 24px;
+      padding: 24px;
+      border: 1px solid rgba(143, 59, 95, 0.08);
+      animation: rise 0.45s ease;
+    }
+
+    .label {
+      margin: 0 0 8px;
+      font-size: 0.88rem;
+      color: var(--berry);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .title {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+    }
+
+    .description {
+      margin: 12px 0 0;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .tags {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tag {
+      padding: 9px 14px;
+      background: rgba(245, 143, 124, 0.14);
+      color: var(--berry);
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 20px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--coral), #ffb36d);
+      color: #fffaf4;
+      box-shadow: 0 12px 24px rgba(245, 143, 124, 0.26);
+    }
+
+    .secondary {
+      background: rgba(143, 59, 95, 0.1);
+      color: var(--berry);
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .mini-card {
+      background: rgba(255, 247, 237, 0.95);
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px solid rgba(245, 143, 124, 0.14);
+      animation: rise 0.45s ease;
+    }
+
+    .mini-card h3 {
+      margin: 0;
+      font-size: 1.22rem;
+    }
+
+    .mini-card p {
+      margin: 10px 0 0;
+      line-height: 1.65;
+    }
+
+    .hint {
+      margin: 0;
+      color: rgba(74, 45, 36, 0.72);
+      font-size: 0.96rem;
+      line-height: 1.6;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero, .content, .panel, .mini-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <p class="eyebrow">Dessert Random Picker</p>
+      <h1>오늘 먹을 디저트,<br>랜덤으로 골라보자.</h1>
+      <p>먼저 대주제를 하나 추천하고, 그 안에서 다시 소분류 디저트를 뽑아주는 구조입니다. 마음에 안 들면 각 단계에서 바로 다시 추천받을 수 있습니다.</p>
+    </section>
+
+    <section class="content">
+      <article class="panel" id="main-panel">
+        <p class="label">1단계 · 대주제 추천</p>
+        <h2 class="title" id="main-title"></h2>
+        <p class="description" id="main-description"></p>
+        <div class="tags" id="main-tags"></div>
+        <div class="actions">
+          <button class="primary" id="main-reroll">다시 추천받기</button>
+          <button class="secondary" id="pick-sub">이 주제로 고르기</button>
+        </div>
+      </article>
+
+      <article class="panel">
+        <p class="label">2단계 · 소분류 추천</p>
+        <p class="hint" id="sub-hint">먼저 대주제를 고른 뒤 소분류 추천을 받아보세요.</p>
+        <div class="grid" id="sub-grid"></div>
+        <div class="actions" id="sub-actions" hidden>
+          <button class="primary" id="sub-reroll">소분류 다시 추천받기</button>
+          <button class="secondary" id="all-reroll">처음부터 다시 추천받기</button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const dessertThemes = [
+      {
+        name: "차갑고 시원한 디저트",
+        description: "입안을 산뜻하게 식혀주는 계열입니다. 가벼운 기분 전환이나 더운 날에 특히 잘 맞습니다.",
+        tags: ["상큼함", "쿨링", "여름 무드"],
+        options: [
+          { name: "젤라또", detail: "진한 풍미를 느끼고 싶을 때 좋은 쫀쫀한 아이스크림." },
+          { name: "과일 빙수", detail: "과일 토핑이 듬뿍 올라가 산뜻하게 먹기 좋은 선택." },
+          { name: "요거트 아이스크림", detail: "새콤한 맛과 가벼운 질감이 매력적인 디저트." },
+          { name: "푸딩 파르페", detail: "부드러운 푸딩과 차가운 크림이 층층이 쌓인 조합." }
+        ]
+      },
+      {
+        name: "폭신하고 부드러운 디저트",
+        description: "식감이 편안하고 달콤함이 안정적으로 느껴지는 계열입니다. 커피나 차와도 잘 어울립니다.",
+        tags: ["포근함", "부드러움", "카페 조합"],
+        options: [
+          { name: "수플레 팬케이크", detail: "구름처럼 폭신해서 한 입 먹는 재미가 큰 디저트." },
+          { name: "생크림 롤케이크", detail: "부드러운 시트와 크림이 부담 없이 어우러집니다." },
+          { name: "치즈 무스 케이크", detail: "입에서 사르르 녹는 질감이 중심인 선택." },
+          { name: "우유 푸딩", detail: "담백하면서도 달콤한 마무리가 좋은 디저트." }
+        ]
+      },
+      {
+        name: "꾸덕하고 진한 디저트",
+        description: "한 입만으로도 만족감이 큰 묵직한 계열입니다. 진한 맛을 원할 때 적합합니다.",
+        tags: ["진한 맛", "꾸덕함", "높은 만족감"],
+        options: [
+          { name: "브라우니", detail: "초콜릿의 밀도감이 진하게 느껴지는 대표 선택." },
+          { name: "바스크 치즈케이크", detail: "탄 향과 치즈 풍미가 강하게 살아 있는 디저트." },
+          { name: "가토 쇼콜라", detail: "쫀득하고 깊은 초코 맛을 즐기기 좋습니다." },
+          { name: "티라미수", detail: "커피 향과 크림의 묵직함이 균형 있게 어우러집니다." }
+        ]
+      },
+      {
+        name: "바삭하고 손이 가는 디저트",
+        description: "가볍게 집어 먹기 좋고 식감이 또렷한 계열입니다. 여러 개를 나눠 먹기에도 좋습니다.",
+        tags: ["바삭함", "간식형", "공유하기 좋음"],
+        options: [
+          { name: "크루아상", detail: "겹겹이 살아 있는 결이 매력적인 베이커리 디저트." },
+          { name: "에그타르트", detail: "바삭한 타르트지와 촉촉한 필링의 대비가 좋습니다." },
+          { name: "츄러스", detail: "겉은 바삭하고 안은 쫄깃해서 만족감이 높은 간식." },
+          { name: "쿠키 샌드", detail: "바삭한 쿠키 사이에 크림을 넣어 식감이 풍부합니다." }
+        ]
+      },
+      {
+        name: "과일 향이 살아 있는 디저트",
+        description: "달콤함 속에 산미와 향이 살아 있어 비교적 가볍게 즐기기 좋은 계열입니다.",
+        tags: ["과일향", "산뜻함", "가벼운 단맛"],
+        options: [
+          { name: "딸기 타르트", detail: "달콤한 크림과 상큼한 딸기의 조합이 분명합니다." },
+          { name: "망고 크레이프", detail: "부드러운 시트와 열대과일 향이 잘 어울립니다." },
+          { name: "레몬 파운드케이크", detail: "은은한 산미가 입맛을 깨워주는 선택." },
+          { name: "복숭아 판나코타", detail: "부드러운 크림 디저트에 과일 향을 더한 스타일." }
+        ]
+      }
+    ];
+
+    const mainTitle = document.getElementById("main-title");
+    const mainDescription = document.getElementById("main-description");
+    const mainTags = document.getElementById("main-tags");
+    const subHint = document.getElementById("sub-hint");
+    const subGrid = document.getElementById("sub-grid");
+    const subActions = document.getElementById("sub-actions");
+
+    let currentThemeIndex = -1;
+
+    function pickRandomIndex(listLength, except = -1) {
+      if (listLength <= 1) {
+        return 0;
+      }
+
+      let nextIndex = Math.floor(Math.random() * listLength);
+      while (nextIndex === except) {
+        nextIndex = Math.floor(Math.random() * listLength);
+      }
+      return nextIndex;
+    }
+
+    function renderMainTheme(index) {
+      const theme = dessertThemes[index];
+      currentThemeIndex = index;
+      mainTitle.textContent = theme.name;
+      mainDescription.textContent = theme.description;
+      mainTags.innerHTML = theme.tags.map((tag) => `<span class="tag"># ${tag}</span>`).join("");
+      subHint.textContent = `"${theme.name}" 안에서 소분류 추천을 받아보세요.`;
+      subGrid.innerHTML = "";
+      subActions.hidden = true;
+    }
+
+    function rerollMainTheme() {
+      const nextIndex = pickRandomIndex(dessertThemes.length, currentThemeIndex);
+      renderMainTheme(nextIndex);
+    }
+
+    function renderSubOptions() {
+      const theme = dessertThemes[currentThemeIndex];
+      const picked = [...theme.options]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
+
+      subGrid.innerHTML = picked.map((option) => `
+        <section class="mini-card">
+          <h3>${option.name}</h3>
+          <p>${option.detail}</p>
+        </section>
+      `).join("");
+
+      subHint.textContent = `"${theme.name}" 추천 결과입니다. 마음에 안 들면 다시 뽑아보세요.`;
+      subActions.hidden = false;
+    }
+
+    document.getElementById("main-reroll").addEventListener("click", rerollMainTheme);
+    document.getElementById("pick-sub").addEventListener("click", renderSubOptions);
+    document.getElementById("sub-reroll").addEventListener("click", renderSubOptions);
+    document.getElementById("all-reroll").addEventListener("click", rerollMainTheme);
+
+    renderMainTheme(pickRandomIndex(dessertThemes.length));
+  </script>
+</body>
+</html>
