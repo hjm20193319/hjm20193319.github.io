@@ -376,7 +376,23 @@
       }
 
       .stage-view {
+        position: static;
+        inset: auto;
+        display: none;
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+        transition: none;
         gap: 14px;
+      }
+
+      .stage-view.active {
+        display: grid;
+      }
+
+      .stage-view.exit-left {
+        display: none;
+        transform: none;
       }
 
       .actions {
@@ -500,7 +516,6 @@
     const itemCopy = document.getElementById("item-copy");
     const itemTitle = document.getElementById("item-title");
     const selectedCategory = document.getElementById("selected-category");
-    const stageShell = document.querySelector(".stage-shell");
 
     const pickCategoryButton = document.getElementById("pick-category");
     const repickCategoryButton = document.getElementById("repick-category");
@@ -555,16 +570,7 @@
 
       window.setTimeout(() => {
         nextStage.classList.add("active");
-        syncStageHeight(nextStage);
       }, 20);
-    }
-
-    function syncStageHeight(stage = document.querySelector(".stage-view.active")) {
-      if (!stage) {
-        return;
-      }
-
-      stageShell.style.height = `${stage.scrollHeight}px`;
     }
 
     function resetItemState() {
@@ -677,12 +683,6 @@
     repickItemButton.addEventListener("click", pickItem);
     backCategoryButton.addEventListener("click", backToCategory);
     restartAllButton.addEventListener("click", restartAll);
-
-    window.addEventListener("load", () => syncStageHeight(categoryStage));
-    window.addEventListener("resize", () => {
-      const activeStage = document.querySelector(".stage-view.active");
-      syncStageHeight(activeStage);
-    });
   </script>
 </body>
 </html>

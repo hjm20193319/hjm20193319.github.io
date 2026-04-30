@@ -390,6 +390,25 @@
         overflow: visible;
       }
 
+      .stage-view {
+        position: static;
+        inset: auto;
+        display: none;
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+        transition: none;
+      }
+
+      .stage-view.active {
+        display: grid;
+      }
+
+      .stage-view.exit-left {
+        display: none;
+        transform: none;
+      }
+
       .choice-grid {
         grid-template-columns: 1fr;
       }
@@ -639,16 +658,7 @@
       next.classList.remove("exit-left");
       requestAnimationFrame(() => {
         next.classList.add("active");
-        syncStageHeight(next);
       });
-    }
-
-    function syncStageHeight(stage = stageRoot.querySelector(".stage-view.active")) {
-      if (!stage) {
-        return;
-      }
-
-      stageRoot.style.height = `${stage.scrollHeight}px`;
     }
 
     function updateBackButtons() {
@@ -685,7 +695,6 @@
 
       updateBackButtons();
       switchView("stage");
-      syncStageHeight(stageRoot.querySelector('[data-stage-view="stage"]'));
     }
 
     function handleOption(option) {
@@ -734,8 +743,6 @@
     restartButton.addEventListener("click", resetFlow);
 
     renderStage();
-    window.addEventListener("load", () => syncStageHeight(stageRoot.querySelector('[data-stage-view="stage"]')));
-    window.addEventListener("resize", () => syncStageHeight());
   </script>
 </body>
 </html>
