@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스타일 랩</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+    :root {
+      --bg-a: #09091f;
+      --bg-b: #170b3b;
+      --bg-c: #071d3b;
+      --panel: rgba(255, 255, 255, 0.08);
+      --panel-strong: rgba(255, 255, 255, 0.12);
+      --line: rgba(255, 255, 255, 0.12);
+      --white: #f8fbff;
+      --soft: #c8c9f8;
+      --pink: #ff5fd2;
+      --violet: #9b5cff;
+      --cyan: #4ae6ff;
+      --mint: #76ffbf;
+      --gold: #ffd36f;
+      --shadow: 0 26px 80px rgba(5, 8, 28, 0.42);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
+      color: var(--white);
+      background:
+        radial-gradient(circle at 15% 18%, rgba(255, 95, 210, 0.18), transparent 20%),
+        radial-gradient(circle at 82% 20%, rgba(74, 230, 255, 0.16), transparent 18%),
+        radial-gradient(circle at 68% 72%, rgba(118, 255, 191, 0.12), transparent 20%),
+        linear-gradient(135deg, var(--bg-a), var(--bg-b) 48%, var(--bg-c));
+    }
+
+    .stars,
+    .orbs {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .stars {
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      animation: twinkle var(--dur) ease-in-out infinite alternate;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(28px);
+      opacity: 0.34;
+      animation: drift var(--dur) ease-in-out infinite alternate;
+    }
+
+    .orb.pink {
+      width: 240px;
+      height: 240px;
+      top: 80px;
+      left: -60px;
+      background: rgba(255, 95, 210, 0.58);
+    }
+
+    .orb.cyan {
+      width: 280px;
+      height: 280px;
+      top: 220px;
+      right: -80px;
+      background: rgba(74, 230, 255, 0.52);
+    }
+
+    .orb.violet {
+      width: 180px;
+      height: 180px;
+      bottom: 80px;
+      left: 50%;
+      background: rgba(155, 92, 255, 0.42);
+      transform: translateX(-50%);
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 26px 20px 56px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 34px;
+      border-radius: 34px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06)),
+        linear-gradient(135deg, rgba(155, 92, 255, 0.26), rgba(74, 230, 255, 0.14));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #fcecff;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--pink));
+      box-shadow: 0 0 16px rgba(255, 211, 111, 0.6);
+    }
+
+    h1 {
+      margin: 20px 0 0;
+      max-width: 760px;
+      font-family: "Black Han Sans", sans-serif;
+      font-size: clamp(2.8rem, 8vw, 5.8rem);
+      line-height: 0.94;
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, #fff4c4, #ff91de 32%, #86f7ff 66%, #b1ffbe);
+      background-size: 220% 220%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glowShift 7s ease infinite;
+      text-shadow: 0 0 24px rgba(255, 255, 255, 0.12);
+    }
+
+    .hero-copy {
+      margin: 18px 0 0;
+      max-width: 620px;
+      color: var(--soft);
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    .hero-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
+      gap: 24px;
+      margin-top: 28px;
+    }
+
+    .hero-stack {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #f4f3ff;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .hero-panel {
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+      border-radius: 28px;
+      background: rgba(7, 10, 36, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: -20% auto auto 50%;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 95, 210, 0.26), transparent 66%);
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .panel-title {
+      position: relative;
+      margin: 0;
+      font-size: 0.86rem;
+      color: #f0dfff;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .panel-main {
+      position: relative;
+      margin: 12px 0 0;
+      font-family: "Do Hyeon", sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    .panel-copy {
+      position: relative;
+      margin: 10px 0 0;
+      line-height: 1.7;
+      color: #c6cbf9;
+      font-size: 0.95rem;
+    }
+
+    .content {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      margin-top: 20px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+      border-radius: 28px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.06));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% -40% auto;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(74, 230, 255, 0.16), transparent 68%);
+      pointer-events: none;
+    }
+
+    .card.wide {
+      grid-column: span 7;
+    }
+
+    .card.side {
+      grid-column: span 5;
+    }
+
+    .card.full {
+      grid-column: 1 / -1;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e8dbff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .card h2,
+    .card h3 {
+      margin: 16px 0 0;
+      font-family: "Do Hyeon", sans-serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .card h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+    }
+
+    .card h3 {
+      font-size: 1.45rem;
+    }
+
+    .card p {
+      margin: 12px 0 0;
+      color: var(--soft);
+      line-height: 1.75;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .button.primary {
+      color: #ffffff;
+      background: linear-gradient(135deg, #6d68ff, #b352ff 54%, #ff5fd2);
+      box-shadow: 0 16px 34px rgba(179, 82, 255, 0.34);
+    }
+
+    .button.secondary {
+      color: #f2f4ff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .preview-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .preview-chip {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .preview-chip strong {
+      display: block;
+      font-size: 1rem;
+      color: #ffffff;
+    }
+
+    .preview-chip span {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.92rem;
+      color: #cbd1ff;
+      line-height: 1.65;
+    }
+
+    .font-showcase {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .font-item {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .font-item .font-name {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f0ccff;
+    }
+
+    .font-item .font-sample {
+      display: block;
+      margin-top: 8px;
+      line-height: 1.25;
+    }
+
+    .font-item.title .font-sample {
+      font-family: "Black Han Sans", sans-serif;
+      font-size: 2rem;
+      color: #ffffff;
+    }
+
+    .font-item.sub .font-sample {
+      font-family: "Do Hyeon", sans-serif;
+      font-size: 1.7rem;
+      color: #89f6ff;
+    }
+
+    .font-item.body .font-sample {
+      font-family: "Noto Sans KR", sans-serif;
+      font-size: 1rem;
+      color: #d6dafc;
+    }
+
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .tag {
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(255, 95, 210, 0.24), rgba(74, 230, 255, 0.18));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      color: #aab1ec;
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    @keyframes twinkle {
+      0% {
+        opacity: 0.16;
+        transform: scale(0.85);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
+
+    @keyframes drift {
+      0% {
+        transform: translateY(0) translateX(0);
+      }
+      100% {
+        transform: translateY(20px) translateX(12px);
+      }
+    }
+
+    @keyframes glowShift {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .hero-row,
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .card.wide,
+      .card.side {
+        grid-column: auto;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 14px 14px 40px;
+      }
+
+      .hero,
+      .card {
+        padding: 22px 18px;
+      }
+
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  <div class="orbs">
+    <div class="orb pink" style="--dur: 7s;"></div>
+    <div class="orb cyan" style="--dur: 9s;"></div>
+    <div class="orb violet" style="--dur: 8s;"></div>
+  </div>
+
+  <main class="page">
+    <section class="hero">
+      <span class="eyebrow">Style Lab</span>
+      <h1>MZ 감도는 이렇게 더 세게 갈 수 있어요</h1>
+      <p class="hero-copy">
+        지금 페이지보다 훨씬 화려하고, 제목과 본문 폰트를 분리하고, 네온 계열 포인트와 유리판 질감을 섞어서 더 트렌디한 방향을 테스트하는 샘플입니다.
+      </p>
+
+      <div class="hero-row">
+        <div class="hero-stack">
+          <div class="badge-row">
+            <span class="badge">네온 포인트</span>
+            <span class="badge">글래스 질감</span>
+            <span class="badge">다중 폰트</span>
+            <span class="badge">강한 타이틀</span>
+          </div>
+          <div class="button-row">
+            <a class="button primary" href="./index.html">허브로 돌아가기</a>
+            <a class="button secondary" href="./cafemenu.html">기존 카페 페이지 보기</a>
+          </div>
+        </div>
+
+        <aside class="hero-panel">
+          <p class="panel-title">Mood Sample</p>
+          <p class="panel-main">FLASHY<br>YOUTH</p>
+          <p class="panel-copy">
+            어두운 배경 위에 빛나는 텍스트, 짧고 강한 헤드라인, 반투명 카드 레이어가 핵심입니다.
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="content">
+      <article class="card wide">
+        <span class="kicker">Visual Direction</span>
+        <h2>정돈된 UI보다 한 단계 더 강한 존재감을 주는 방식</h2>
+        <p>
+          차분한 카드형 구조는 유지하되, 배경을 더 어둡게 잡고 포인트 색을 선명하게 올리면 초보자 느낌이 줄고 훨씬 완성도 있는 트렌드 UI처럼 보입니다.
+        </p>
+        <div class="preview-grid">
+          <div class="preview-chip">
+            <strong>배경</strong>
+            <span>짙은 남색과 보랏빛을 섞은 그라데이션 위에 작은 별과 번지는 빛 효과를 얹습니다.</span>
+          </div>
+          <div class="preview-chip">
+            <strong>카드</strong>
+            <span>불투명 흰 박스 대신 반투명 패널과 얇은 라인으로 유리판 느낌을 줍니다.</span>
+          </div>
+          <div class="preview-chip">
+            <strong>타이틀</strong>
+            <span>굵은 디스플레이 폰트와 컬러 그라데이션 텍스트로 첫인상을 강하게 잡습니다.</span>
+          </div>
+          <div class="preview-chip">
+            <strong>버튼</strong>
+            <span>단색보다 네온 그라데이션과 그림자를 써서 클릭 요소가 더 선명하게 보이게 합니다.</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card side">
+        <span class="kicker">Font Mix</span>
+        <h3>폰트도 역할을 나눠 씁니다</h3>
+        <p>
+          본문 하나로 끝내지 않고, 제목용과 보조 헤드라인용을 나눠 쓰면 화면 인상이 훨씬 세련되게 달라집니다.
+        </p>
+        <div class="font-showcase">
+          <div class="font-item title">
+            <span class="font-name">Display</span>
+            <span class="font-sample">블랙한산 계열의 강한 제목</span>
+          </div>
+          <div class="font-item sub">
+            <span class="font-name">Sub Title</span>
+            <span class="font-sample">도현 계열의 짧고 시원한 헤드라인</span>
+          </div>
+          <div class="font-item body">
+            <span class="font-name">Body</span>
+            <span class="font-sample">본문은 노토 산스처럼 읽기 쉬운 폰트로 안정감을 유지합니다.</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card full">
+        <span class="kicker">Use Cases</span>
+        <h3>이 방향을 어디에 쓸 수 있나</h3>
+        <p>
+          추천, 테스트, 운세, 취향 선택, 랜덤 생성, 이벤트성 기능처럼 감정과 재미를 같이 전달하는 페이지에 특히 잘 맞습니다.
+        </p>
+        <div class="tag-cloud">
+          <span class="tag">랜덤 추천</span>
+          <span class="tag">선택 테스트</span>
+          <span class="tag">카드 탐색형 UI</span>
+          <span class="tag">MZ 분위기</span>
+          <span class="tag">SNS 썸네일 감성</span>
+          <span class="tag">화려한 허브 카드</span>
+          <span class="tag">팬시한 CTA</span>
+        </div>
+        <p class="footer-note">
+          이 샘플이 괜찮으면 다음 단계에서는 허브 전체를 이 방향으로 재디자인하거나, 카페 메뉴 추천만 이 스타일로 별도 리메이크할 수 있습니다.
+        </p>
+      </article>
+
+      <article class="card full">
+        <span class="kicker">Streamline Test</span>
+        <h3>설치된 Streamline 리소스 확인용 테스트</h3>
+        <p>
+          현재 로컬에서 바로 확인된 건 Streamline 확장의 브랜드 SVG입니다. 픽셀 아이콘 팩 전체가 파일로 풀려 있는 형태는 아직 보이지 않았고, 우선 이 아이콘이 스타일랩 페이지에서 자연스럽게 들어가는지만 테스트합니다.
+        </p>
+        <div class="preview-grid">
+          <div class="preview-chip" style="display:flex; align-items:center; gap:16px;">
+            <span style="display:inline-flex; width:56px; height:56px; align-items:center; justify-content:center; border-radius:18px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1);">
+              <svg width="28" height="40" viewBox="0 0 17 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Streamline icon">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M10.046 1.278c-.784 0-1.49.321-2.012.855L2.102 8.18a2.947 2.947 0 0 0 .002 4.114l.001.002c.545.562 1.27.842 2.001.842h3.478a.63.63 0 0 1 .447.187l2.471 2.493a.64.64 0 0 1 .138.696.63.63 0 0 1-.585.395H6.578c-1.568 0-2.845 1.3-2.845 2.906 0 1.614 1.284 2.907 2.844 2.907.778 0 1.492-.323 2.004-.846l5.923-6.047a2.947 2.947 0 0 0 0-4.113l-.003-.003a2.77 2.77 0 0 0-2.001-.842H9.022a.63.63 0 0 1-.45-.19L6.12 8.18a.64.64 0 0 1-.135-.696.63.63 0 0 1 .585-.393h3.477c1.568 0 2.845-1.3 2.845-2.906 0-1.614-1.284-2.907-2.845-2.907m-2.912-.045A4.06 4.06 0 0 1 10.046 0c2.27 0 4.11 1.875 4.11 4.185 0 2.298-1.83 4.184-4.11 4.184h-1.96l1.2 1.224H12.5c1.05 0 2.108.403 2.905 1.226a4.234 4.234 0 0 1-.001 5.91L9.48 22.776A4.07 4.07 0 0 1 6.578 24c-2.27 0-4.111-1.875-4.111-4.185 0-2.298 1.83-4.184 4.11-4.184h1.949l-1.204-1.215H4.106a4.03 4.03 0 0 1-2.905-1.226 4.234 4.234 0 0 1 .002-5.91z" fill="url(#streamlineGradient)"/>
+                <defs>
+                  <linearGradient id="streamlineGradient" x1="1" y1="2" x2="16" y2="22" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#76ffbf"/>
+                    <stop offset="0.55" stop-color="#49f0ff"/>
+                    <stop offset="1" stop-color="#ff5fd2"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </span>
+            <div>
+              <strong>Streamline SVG 테스트 성공</strong>
+              <span>확장 내부 리소스를 기준으로 인라인 삽입한 샘플입니다. 현재는 브랜드 아이콘 확인 단계입니다.</span>
+            </div>
+          </div>
+          <div class="preview-chip">
+            <strong>현재 판단</strong>
+            <span>픽셀 아이콘 팩 전체가 로컬 파일로 내려받아진 상태는 아직 확인되지 않았습니다. 확장 설치와 아이콘 다운로드는 별개로 보입니다.</span>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const stars = document.getElementById("stars");
+
+    for (let i = 0; i < 90; i += 1) {
+      const star = document.createElement("div");
+      const size = Math.random() * 2.4 + 0.8;
+      star.className = "star";
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.setProperty("--dur", `${Math.random() * 2.8 + 2.2}s`);
+      star.style.animationDelay = `${Math.random() * 2.5}s`;
+      stars.appendChild(star);
+    }
+  </script>
+</body>
+</html>
