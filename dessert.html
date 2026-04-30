@@ -371,10 +371,26 @@
       }
 
       .stage-shell {
-        min-height: 640px;
+        min-height: 0;
+        overflow: visible;
+      }
+
+      .stage-view {
+        gap: 14px;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      button,
+      .link-button {
+        width: 100%;
+        justify-content: center;
       }
 
       .footer {
+        flex-direction: column;
         align-items: flex-start;
       }
     }
@@ -484,6 +500,7 @@
     const itemCopy = document.getElementById("item-copy");
     const itemTitle = document.getElementById("item-title");
     const selectedCategory = document.getElementById("selected-category");
+    const stageShell = document.querySelector(".stage-shell");
 
     const pickCategoryButton = document.getElementById("pick-category");
     const repickCategoryButton = document.getElementById("repick-category");
@@ -538,7 +555,16 @@
 
       window.setTimeout(() => {
         nextStage.classList.add("active");
+        syncStageHeight(nextStage);
       }, 20);
+    }
+
+    function syncStageHeight(stage = document.querySelector(".stage-view.active")) {
+      if (!stage) {
+        return;
+      }
+
+      stageShell.style.height = `${stage.scrollHeight}px`;
     }
 
     function resetItemState() {
@@ -651,6 +677,12 @@
     repickItemButton.addEventListener("click", pickItem);
     backCategoryButton.addEventListener("click", backToCategory);
     restartAllButton.addEventListener("click", restartAll);
+
+    window.addEventListener("load", () => syncStageHeight(categoryStage));
+    window.addEventListener("resize", () => {
+      const activeStage = document.querySelector(".stage-view.active");
+      syncStageHeight(activeStage);
+    });
   </script>
 </body>
 </html>
