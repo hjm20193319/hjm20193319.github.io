@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>카페 메뉴 추천</title>
+  <style>
+    :root {
+      --bg-deep: #0f3b2f;
+      --bg-mid: #174d3c;
+      --bg-soft: #e9e1d3;
+      --panel: rgba(249, 245, 238, 0.92);
+      --card: rgba(255, 252, 247, 0.98);
+      --line: rgba(25, 70, 56, 0.12);
+      --ink: #264136;
+      --ink-soft: #4f675d;
+      --ink-warm: #765a3a;
+      --muted: rgba(79, 103, 93, 0.76);
+      --accent: #1e5a43;
+      --accent-deep: #153c2f;
+      --accent-soft: #2d7a5a;
+      --accent-cream: #f5efe6;
+      --gold: #b99256;
+      --shadow: 0 30px 90px rgba(15, 44, 35, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px;
+      font-family: "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.08), transparent 18%),
+        radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.05), transparent 18%),
+        linear-gradient(135deg, #0f3429 0%, var(--bg-deep) 38%, var(--bg-mid) 100%);
+    }
+
+    .shell {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      border-radius: 34px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 248, 237, 0.16);
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 56px 40px 40px;
+      color: #f7f0e7;
+      background:
+        radial-gradient(circle at top right, rgba(255, 244, 220, 0.14), transparent 24%),
+        linear-gradient(135deg, #0f3329, #174836 54%, #1f5a43);
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      inset: auto;
+    }
+
+    .hero::before {
+      top: -54px;
+      right: -28px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 242, 217, 0.14), transparent 66%);
+    }
+
+    .hero::after {
+      left: 40px;
+      bottom: 24px;
+      width: 180px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255, 231, 193, 0.4), rgba(255, 231, 193, 0));
+      box-shadow: 0 -10px 0 rgba(255, 231, 193, 0.12), 0 10px 0 rgba(255, 231, 193, 0.08);
+    }
+
+    .eyebrow {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(239, 222, 195, 0.82);
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 0.96;
+      letter-spacing: -0.05em;
+      color: #f7efe2;
+      text-shadow: 0 20px 38px rgba(7, 24, 18, 0.24);
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+      margin: 18px 0 0;
+      max-width: 660px;
+      line-height: 1.9;
+      color: rgba(243, 235, 223, 0.9);
+    }
+
+    .content {
+      padding: 30px;
+      background:
+        linear-gradient(180deg, rgba(249, 245, 238, 0.96), rgba(244, 238, 230, 0.94)),
+        repeating-linear-gradient(0deg, rgba(20, 60, 46, 0.018) 0 1px, transparent 1px 24px);
+    }
+
+    .stage-shell {
+      position: relative;
+      min-height: 600px;
+      overflow: hidden;
+    }
+
+    .stage-view {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      align-content: start;
+      gap: 18px;
+      padding-top: 6px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(52px) scale(0.98);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .stage-view.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0) scale(1);
+      z-index: 2;
+    }
+
+    .stage-view.exit-left {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-58px) scale(0.98);
+      z-index: 1;
+    }
+
+    .progress {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(30, 90, 67, 0.08);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      border: 1px solid rgba(30, 90, 67, 0.08);
+    }
+
+    .panel {
+      position: relative;
+      overflow: hidden;
+      padding: 34px;
+      border-radius: 28px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow:
+        0 20px 44px rgba(22, 55, 43, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      top: auto;
+      right: 22px;
+      bottom: 20px;
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      border: 1px solid rgba(185, 146, 86, 0.18);
+      background: radial-gradient(circle, rgba(185, 146, 86, 0.08), transparent 68%);
+      pointer-events: none;
+    }
+
+    .title {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+    }
+
+    .copy {
+      margin: 14px 0 0;
+      max-width: 680px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .choice-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      margin-top: 30px;
+    }
+
+    .choice-button,
+    .action-button {
+      appearance: none;
+      border: none;
+      border-radius: 18px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .choice-button {
+      min-height: 132px;
+      padding: 22px 20px;
+      text-align: left;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(255, 253, 249, 1), rgba(245, 238, 228, 0.98));
+      border: 1px solid rgba(24, 68, 53, 0.08);
+      box-shadow: 0 14px 30px rgba(19, 51, 40, 0.06);
+    }
+
+    .choice-button:hover,
+    .action-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 36px rgba(19, 51, 40, 0.1);
+    }
+
+    .choice-button:focus-visible,
+    .action-button:focus-visible {
+      outline: 3px solid rgba(45, 122, 90, 0.28);
+      outline-offset: 2px;
+    }
+
+    .choice-button::after {
+      content: "";
+      display: block;
+      width: 46px;
+      height: 2px;
+      margin-top: 18px;
+      background: linear-gradient(90deg, var(--gold), rgba(185, 146, 86, 0));
+    }
+
+    .choice-label {
+      display: block;
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .choice-desc {
+      display: block;
+      margin-top: 10px;
+      color: var(--ink-soft);
+      line-height: 1.65;
+      font-size: 0.95rem;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .action-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 22px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .action-button.primary {
+      color: #f8f2e9;
+      background: linear-gradient(135deg, var(--accent-soft), var(--accent));
+      box-shadow: 0 16px 30px rgba(21, 60, 47, 0.24);
+    }
+
+    .action-button.secondary {
+      color: var(--ink-warm);
+      background: rgba(252, 248, 241, 0.96);
+      border: 1px solid rgba(30, 90, 67, 0.12);
+    }
+
+    .action-button:disabled {
+      cursor: default;
+      opacity: 0.46;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .path-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .path-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(30, 90, 67, 0.08);
+      color: var(--ink-warm);
+      font-size: 0.92rem;
+      font-weight: 700;
+      border: 1px solid rgba(30, 90, 67, 0.06);
+    }
+
+    .result-card {
+      margin-top: 26px;
+      padding: 24px 24px 26px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 233, 196, 0.1), transparent 26%),
+        linear-gradient(145deg, #12362b, #1c4d3b 62%, #225940);
+      color: #f7efe4;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 240, 214, 0.08),
+        0 16px 34px rgba(15, 44, 35, 0.22);
+    }
+
+    .result-label {
+      margin: 0;
+      font-size: 0.88rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(233, 210, 171, 0.76);
+    }
+
+    .result-menu {
+      margin: 10px 0 0;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      color: #fff2dc;
+    }
+
+    .result-copy {
+      margin: 12px 0 0;
+      line-height: 1.75;
+      color: rgba(241, 232, 216, 0.84);
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 14px;
+      }
+
+      .hero,
+      .content,
+      .panel {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .hero {
+        padding-top: 40px;
+        padding-bottom: 32px;
+      }
+
+      .stage-shell {
+        min-height: 700px;
+      }
+
+      .choice-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .choice-button {
+        min-height: 110px;
+      }
+
+      .action-row {
+        flex-direction: column;
+      }
+
+      .action-button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <p class="eyebrow">Cafe Choice Guide</p>
+      <h1>카페 메뉴 추천</h1>
+      <p class="hero-copy">
+        커피로 갈지, 상큼한 음료로 갈지 오래 고민할 필요 없게 단계별 선택과 랜덤 추천으로 오늘의 메뉴를 빠르게 정합니다.
+      </p>
+    </section>
+
+    <section class="content">
+      <div class="stage-shell">
+        <section class="stage-view active" data-stage-view="stage">
+          <span class="progress" id="progressText">1단계 · 선택 중</span>
+          <article class="panel">
+            <h2 class="title" id="stageTitle"></h2>
+            <p class="copy" id="stageCopy"></p>
+            <div class="choice-grid" id="choices"></div>
+            <div class="action-row">
+              <button class="action-button primary" type="button" id="randomButton">랜덤 추천</button>
+              <button class="action-button secondary" type="button" id="backButton">이전 단계로</button>
+              <a class="action-button secondary" href="./index.html">허브로 돌아가기</a>
+            </div>
+          </article>
+        </section>
+
+        <section class="stage-view" data-stage-view="result">
+          <span class="progress">추천 완료</span>
+          <article class="panel">
+            <h2 class="title">오늘의 메뉴가 정해졌습니다.</h2>
+            <p class="copy">
+              선택 경로를 따라 도착한 최종 메뉴입니다. 경로를 보고 다시 한 단계 뒤로 돌아가 다른 메뉴를 골라도 됩니다.
+            </p>
+            <div class="path-list" id="pathList"></div>
+            <div class="result-card">
+              <p class="result-label">Final Recommendation</p>
+              <p class="result-menu" id="resultMenu"></p>
+              <p class="result-copy" id="resultCopy"></p>
+            </div>
+            <div class="action-row">
+              <button class="action-button primary" type="button" id="restartButton">처음부터 다시</button>
+              <button class="action-button secondary" type="button" id="resultBackButton">이전 단계로</button>
+              <a class="action-button secondary" href="./index.html">허브로 돌아가기</a>
+            </div>
+          </article>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const MENU_TREE = {
+      prompt: "오늘은 어떤 쪽이 더 끌리나요?",
+      copy: "커피를 중심으로 갈지, 다른 음료를 고를지 먼저 정합니다.",
+      options: [
+        {
+          label: "커피",
+          description: "진한 향과 카페다운 무드를 먼저 고릅니다.",
+          next: {
+            prompt: "커피 안에서는 어떤 스타일이 더 좋은가요?",
+            copy: "라떼처럼 부드럽게 갈지, 아메리카노 계열처럼 깔끔하게 갈지 정합니다.",
+            options: [
+              {
+                label: "라떼",
+                description: "우유감 있고 부드러운 커피로 들어갑니다.",
+                next: {
+                  prompt: "라떼는 어떤 무드가 좋나요?",
+                  copy: "달콤한 쪽과 담백한 쪽 중에서 고르면 최종 메뉴 선택으로 이어집니다.",
+                  options: [
+                    {
+                      label: "단거",
+                      description: "시럽감과 향이 더해진 달콤한 라떼로 갑니다.",
+                      next: {
+                        prompt: "마실 라떼 메뉴를 직접 골라주세요.",
+                        copy: "이 단계에서는 모든 최종 메뉴를 직접 선택할 수 있고, 랜덤 추천도 가능합니다.",
+                        options: [
+                          { label: "바닐라라떼", description: "부드럽고 익숙한 달콤함.", result: true },
+                          { label: "카라멜라떼", description: "짙고 깊은 캐러멜 향.", result: true },
+                          { label: "크림라떼", description: "크리미하고 디저트 같은 질감.", result: true },
+                          { label: "헤이즐넛라떼", description: "고소한 향이 도는 달달한 선택.", result: true }
+                        ]
+                      }
+                    },
+                    {
+                      label: "안단거",
+                      description: "깔끔하고 고소한 라떼 계열로 갑니다.",
+                      next: {
+                        prompt: "담백한 라떼 메뉴를 골라주세요.",
+                        copy: "우유 밸런스와 질감이 다른 메뉴들 중에서 바로 선택할 수 있습니다.",
+                        options: [
+                          { label: "카페라떼", description: "가장 균형 잡힌 기본 라떼.", result: true },
+                          { label: "플랫화이트", description: "진한 커피감이 더 살아 있는 선택.", result: true },
+                          { label: "카푸치노", description: "거품감이 살아 있는 클래식 라떼.", result: true }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                label: "아메리카노",
+                description: "깔끔하고 쌉쌀한 계열로 갑니다.",
+                next: {
+                  prompt: "어떤 커피 메뉴로 마실까요?",
+                  copy: "아메리카노 계열 안에서도 원하는 최종 메뉴를 직접 고를 수 있습니다.",
+                  options: [
+                    { label: "아메리카노", description: "가장 기본이 되는 깔끔한 선택.", result: true },
+                    { label: "콜드브루", description: "차갑고 부드럽게 넘어가는 진한 커피.", result: true },
+                    { label: "아인슈페너", description: "크림이 올라간 부드러운 블랙커피.", result: true }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          label: "음료",
+          description: "커피 말고 상큼하거나 달콤한 음료로 갑니다.",
+          next: {
+            prompt: "음료 안에서는 어떤 결이 더 끌리나요?",
+            copy: "시원한 블렌디드, 탄산감 있는 에이드, 포근한 라떼 계열 중에서 고릅니다.",
+            options: [
+              {
+                label: "스무디",
+                description: "시원하고 든든한 블렌디드 계열입니다.",
+                next: {
+                  prompt: "마실 스무디 메뉴를 골라주세요.",
+                  copy: "임시 추천 메뉴를 직접 고르거나 랜덤 추천으로 정할 수 있습니다.",
+                  options: [
+                    { label: "딸기스무디", description: "상큼하고 달콤한 대표 스무디.", result: true },
+                    { label: "망고스무디", description: "열대 과일 향이 진한 메뉴.", result: true },
+                    { label: "블루베리스무디", description: "과즙감과 색감이 매력적인 선택.", result: true },
+                    { label: "플레인요거트스무디", description: "산뜻하고 부드러운 요거트 계열.", result: true }
+                  ]
+                }
+              },
+              {
+                label: "에이드",
+                description: "탄산감 있고 상큼한 메뉴로 갑니다.",
+                next: {
+                  prompt: "마실 에이드 메뉴를 골라주세요.",
+                  copy: "산뜻한 계열 위주로 임시 최종 메뉴를 준비했습니다.",
+                  options: [
+                    { label: "레몬에이드", description: "가장 산뜻하고 깔끔한 선택.", result: true },
+                    { label: "자몽에이드", description: "쌉쌀함과 상큼함의 균형.", result: true },
+                    { label: "청포도에이드", description: "달콤함이 조금 더 살아 있는 메뉴.", result: true },
+                    { label: "유자에이드", description: "향긋한 과실 향이 중심인 에이드.", result: true }
+                  ]
+                }
+              },
+              {
+                label: "라떼",
+                description: "커피 없는 음료 라떼 계열로 갑니다.",
+                next: {
+                  prompt: "마실 음료 라떼 메뉴를 골라주세요.",
+                  copy: "포근하고 달콤한 라떼 계열 중에서 직접 선택할 수 있습니다.",
+                  options: [
+                    { label: "말차라떼", description: "쌉쌀함과 부드러움이 함께 오는 선택.", result: true },
+                    { label: "초코라떼", description: "진한 초콜릿 풍미를 원할 때 좋습니다.", result: true },
+                    { label: "고구마라떼", description: "묵직하고 포근한 단맛이 있는 메뉴.", result: true },
+                    { label: "곡물라떼", description: "고소하고 편안한 무드의 음료.", result: true }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    };
+
+    const state = {
+      history: []
+    };
+
+    const progressText = document.getElementById("progressText");
+    const stageTitle = document.getElementById("stageTitle");
+    const stageCopy = document.getElementById("stageCopy");
+    const choicesEl = document.getElementById("choices");
+    const randomButton = document.getElementById("randomButton");
+    const backButton = document.getElementById("backButton");
+    const restartButton = document.getElementById("restartButton");
+    const resultBackButton = document.getElementById("resultBackButton");
+    const pathList = document.getElementById("pathList");
+    const resultMenu = document.getElementById("resultMenu");
+    const resultCopy = document.getElementById("resultCopy");
+    const stageRoot = document.querySelector(".stage-shell");
+
+    function getCurrentNode() {
+      let node = MENU_TREE;
+
+      for (const label of state.history) {
+        const matched = node.options.find((option) => option.label === label);
+        if (!matched) {
+          break;
+        }
+
+        if (matched.result) {
+          return matched;
+        }
+
+        node = matched.next;
+      }
+
+      return node;
+    }
+
+    function getCurrentOptions() {
+      const current = getCurrentNode();
+      return current.options || [];
+    }
+
+    function getStepNumber() {
+      return state.history.length + 1;
+    }
+
+    function switchView(target) {
+      const active = stageRoot.querySelector(".stage-view.active");
+      const next = stageRoot.querySelector(`[data-stage-view="${target}"]`);
+
+      if (active === next) {
+        return;
+      }
+
+      if (active) {
+        active.classList.remove("active");
+        active.classList.add("exit-left");
+      }
+
+      next.classList.remove("exit-left");
+      requestAnimationFrame(() => {
+        next.classList.add("active");
+      });
+    }
+
+    function updateBackButtons() {
+      const disabled = state.history.length === 0;
+      backButton.disabled = disabled;
+      resultBackButton.disabled = disabled;
+    }
+
+    function renderStage() {
+      const current = getCurrentNode();
+      const options = getCurrentOptions();
+
+      progressText.textContent = `${getStepNumber()}단계 · 선택 중`;
+      stageTitle.textContent = current.prompt;
+      stageCopy.textContent = current.copy;
+      choicesEl.innerHTML = "";
+
+      options.forEach((option) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "choice-button";
+        button.innerHTML = `
+          <span class="choice-label">${option.label}</span>
+          <span class="choice-desc">${option.description}</span>
+        `;
+        button.addEventListener("click", () => handleOption(option));
+        choicesEl.appendChild(button);
+      });
+
+      randomButton.onclick = () => {
+        const randomIndex = Math.floor(Math.random() * options.length);
+        handleOption(options[randomIndex]);
+      };
+
+      updateBackButtons();
+      switchView("stage");
+    }
+
+    function handleOption(option) {
+      state.history.push(option.label);
+
+      if (option.result) {
+        renderResult(option.label);
+        return;
+      }
+
+      renderStage();
+    }
+
+    function renderResult(menu) {
+      pathList.innerHTML = "";
+
+      state.history.forEach((entry) => {
+        const chip = document.createElement("span");
+        chip.className = "path-chip";
+        chip.textContent = entry;
+        pathList.appendChild(chip);
+      });
+
+      resultMenu.textContent = menu;
+      resultCopy.textContent = `${state.history.join(" → ")} 흐름으로 결정된 최종 메뉴는 ${menu}입니다.`;
+      updateBackButtons();
+      switchView("result");
+    }
+
+    function goBack() {
+      if (state.history.length === 0) {
+        return;
+      }
+
+      state.history.pop();
+      renderStage();
+    }
+
+    function resetFlow() {
+      state.history = [];
+      renderStage();
+    }
+
+    backButton.addEventListener("click", goBack);
+    resultBackButton.addEventListener("click", goBack);
+    restartButton.addEventListener("click", resetFlow);
+
+    renderStage();
+  </script>
+</body>
+</html>
