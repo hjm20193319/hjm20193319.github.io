@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K2 전차 리포트</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+    :root {
+      --bg-0: #060806;
+      --bg-1: #0d120d;
+      --bg-2: #151c14;
+      --panel: rgba(20, 28, 22, 0.9);
+      --panel-soft: rgba(28, 38, 30, 0.78);
+      --line: rgba(169, 191, 133, 0.18);
+      --line-strong: rgba(201, 220, 160, 0.36);
+      --text: #edf1e6;
+      --muted: #aab4a0;
+      --accent: #b7c77c;
+      --accent-strong: #d9e2a2;
+      --warning: #d8b96b;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.38);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(183, 199, 124, 0.08), transparent 20%),
+        radial-gradient(circle at 82% 18%, rgba(216, 185, 107, 0.08), transparent 14%),
+        linear-gradient(180deg, var(--bg-0), var(--bg-1) 42%, var(--bg-2) 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.14;
+      background:
+        linear-gradient(rgba(183, 199, 124, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(183, 199, 124, 0.06) 1px, transparent 1px);
+      background-size: 44px 44px;
+    }
+
+    .page {
+      position: relative;
+      width: min(1220px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 48px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 36px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background:
+        linear-gradient(135deg, rgba(19, 27, 20, 0.96), rgba(28, 39, 28, 0.9)),
+        linear-gradient(180deg, rgba(183, 199, 124, 0.06), transparent);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 76% 22%, rgba(183, 199, 124, 0.12), transparent 18%),
+        linear-gradient(90deg, transparent 0 72%, rgba(183, 199, 124, 0.08) 72% 72.3%, transparent 72.3% 100%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: 24px;
+      bottom: 18px;
+      width: min(42vw, 460px);
+      height: min(22vw, 220px);
+      opacity: 0.18;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(183, 199, 124, 0.4), rgba(183, 199, 124, 0.08)),
+        no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 280'%3E%3Cg fill='%23d9e2a2'%3E%3Cpath d='M108 178h338l56 22h62v22H66v-27l42-17zm153-73h113l34 28h-187zm-49 20h22v48h-22zm244 16h35l18 37h-35zm-309 12h72v20h-72zm-48 14h39v19H99zm250-87h78l24 13h53v18H414zm22-34h24l27 31h-21z'/%3E%3Ccircle cx='182' cy='216' r='34'/%3E%3Ccircle cx='432' cy='216' r='34'/%3E%3C/g%3E%3C/svg%3E");
+      filter: drop-shadow(0 0 22px rgba(183, 199, 124, 0.12));
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .hud-ring {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 1px solid rgba(183, 199, 124, 0.18);
+      box-shadow:
+        inset 0 0 0 18px rgba(183, 199, 124, 0.03),
+        inset 0 0 0 42px rgba(183, 199, 124, 0.03);
+      pointer-events: none;
+    }
+
+    .hud-ring::before,
+    .hud-ring::after {
+      content: "";
+      position: absolute;
+      background: rgba(183, 199, 124, 0.26);
+    }
+
+    .hud-ring::before {
+      inset: 50% 18px auto 18px;
+      height: 1px;
+    }
+
+    .hud-ring::after {
+      inset: 18px auto 18px 50%;
+      width: 1px;
+    }
+
+    .tag,
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--accent-strong);
+      text-decoration: none;
+      font-size: 0.84rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .tag {
+      font-family: "Orbitron", sans-serif;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: "Orbitron", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(2.3rem, 6vw, 5rem);
+      line-height: 0.95;
+      color: var(--accent-strong);
+      text-shadow: 0 0 26px rgba(183, 199, 124, 0.12);
+    }
+
+    .hero-copy {
+      max-width: 680px;
+      margin: 18px 0 0;
+      line-height: 1.8;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .metric {
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .metric-label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 10px;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      color: var(--text);
+    }
+
+    .content {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .scanline {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      background: repeating-linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.9) 0 1px,
+        transparent 1px 4px
+      );
+      mix-blend-mode: soft-light;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(26, 35, 27, 0.92), rgba(18, 24, 19, 0.92));
+      box-shadow: var(--shadow);
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: auto 24px 18px auto;
+      width: 72px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      opacity: 0.6;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgba(183, 199, 124, 0.06);
+      border-radius: 16px;
+      pointer-events: none;
+    }
+
+    .card.full {
+      grid-column: 1 / -1;
+    }
+
+    .card.wide {
+      grid-column: span 7;
+    }
+
+    .card.side {
+      grid-column: span 5;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 16px rgba(183, 199, 124, 0.36);
+    }
+
+    .section-copy,
+    .card p,
+    .timeline-item p,
+    .insight-list li,
+    .spec-label {
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .spec-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+    }
+
+    .spec-value {
+      display: block;
+      margin-top: 8px;
+      font-family: "Orbitron", sans-serif;
+      font-size: 1.35rem;
+      color: var(--accent-strong);
+    }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .analysis-box {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .analysis-box h3 {
+      font-size: 1rem;
+      color: var(--accent-strong);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .timeline-item {
+      padding: 18px 18px 18px 22px;
+      border-left: 3px solid var(--accent);
+      border-radius: 0 16px 16px 0;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .timeline-item strong {
+      display: block;
+      color: var(--warning);
+      font-family: "Orbitron", sans-serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+    }
+
+    .timeline-item p {
+      margin: 10px 0 0;
+    }
+
+    .insight-list {
+      margin: 18px 0 0;
+      padding-left: 18px;
+    }
+
+    .insight-list li + li {
+      margin-top: 12px;
+    }
+
+    .quote-panel {
+      padding: 20px;
+      border-radius: 18px;
+      border: 1px solid var(--line-strong);
+      background: linear-gradient(135deg, rgba(183, 199, 124, 0.08), rgba(255, 255, 255, 0.02));
+    }
+
+    .quote-panel strong {
+      display: block;
+      color: var(--accent-strong);
+      font-size: 1.05rem;
+    }
+
+    .quote-panel p {
+      margin: 10px 0 0;
+    }
+
+    .diagram-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .diagram-card {
+      padding: 20px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(24, 34, 25, 0.9), rgba(14, 20, 15, 0.94));
+    }
+
+    .diagram-card h3 {
+      margin-bottom: 12px;
+      font-size: 1rem;
+      color: var(--accent-strong);
+    }
+
+    .diagram-card p {
+      margin: 0 0 14px;
+    }
+
+    .mermaid {
+      overflow-x: auto;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(183, 199, 124, 0.14);
+      background: rgba(7, 11, 8, 0.72);
+    }
+
+    .map-panel {
+      position: relative;
+      margin-top: 18px;
+      min-height: 210px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 24% 40%, rgba(183, 199, 124, 0.16), transparent 18%),
+        radial-gradient(circle at 72% 42%, rgba(216, 185, 107, 0.14), transparent 16%),
+        linear-gradient(180deg, rgba(17, 24, 18, 0.9), rgba(13, 19, 14, 0.96));
+      overflow: hidden;
+    }
+
+    .map-grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.14;
+      background:
+        linear-gradient(rgba(183, 199, 124, 0.16) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(183, 199, 124, 0.16) 1px, transparent 1px);
+      background-size: 36px 36px;
+    }
+
+    .map-shape {
+      position: absolute;
+      border: 1px solid rgba(183, 199, 124, 0.16);
+      background: rgba(183, 199, 124, 0.06);
+      filter: drop-shadow(0 0 12px rgba(183, 199, 124, 0.08));
+    }
+
+    .map-shape.korea {
+      left: 18%;
+      top: 22%;
+      width: 88px;
+      height: 112px;
+      clip-path: polygon(52% 0%, 66% 15%, 62% 32%, 76% 46%, 70% 66%, 58% 82%, 64% 100%, 46% 96%, 38% 77%, 28% 61%, 34% 46%, 26% 29%, 36% 12%);
+    }
+
+    .map-shape.poland {
+      right: 18%;
+      top: 26%;
+      width: 112px;
+      height: 92px;
+      clip-path: polygon(16% 18%, 44% 6%, 74% 12%, 90% 36%, 82% 72%, 56% 90%, 24% 84%, 10% 56%);
+    }
+
+    .map-link {
+      position: absolute;
+      left: 29%;
+      right: 29%;
+      top: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--warning));
+      transform: translateY(-50%);
+      box-shadow: 0 0 12px rgba(183, 199, 124, 0.18);
+    }
+
+    .map-link::before,
+    .map-link::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      background: var(--accent-strong);
+      box-shadow: 0 0 14px rgba(217, 226, 162, 0.24);
+    }
+
+    .map-link::before {
+      left: 0;
+    }
+
+    .map-link::after {
+      right: 0;
+      background: var(--warning);
+    }
+
+    .map-label {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(8, 11, 8, 0.82);
+      color: var(--text);
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .map-label.korea {
+      left: 12%;
+      bottom: 20px;
+    }
+
+    .map-label.poland {
+      right: 12%;
+      bottom: 20px;
+    }
+
+    @media (max-width: 980px) {
+      .hero-metrics,
+      .spec-grid,
+      .analysis-grid,
+      .diagram-grid,
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .card.wide,
+      .card.side {
+        grid-column: auto;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - 20px, 1220px);
+        padding-top: 10px;
+      }
+
+      .hero,
+      .card {
+        padding: 20px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="scanline"></div>
+      <div class="hud-ring" aria-hidden="true"></div>
+      <div class="topbar">
+        <span class="tag">Defense Tech Report</span>
+        <a class="back-link" href="./index.html">Hub Index</a>
+      </div>
+      <h1>K2 Black Panther Report</h1>
+      <p class="hero-copy">
+        K2 흑표는 현대로템이 제작하고 국방과학연구소 및 국내 방산업체가 참여해 완성한 3인승 자동장전형
+        주력전차다. 공개 자료 기준 핵심은 55t급 차체, 1,500마력 파워팩, 120mm/L55 활강포, 복합·반응장갑,
+        BMS·C4I 연동, 자동탐지·자동추적·헌터킬러 사격통제 구조에 있다.
+      </p>
+      <div class="hero-metrics">
+        <div class="metric">
+          <span class="metric-label">Combat Weight</span>
+          <strong>55t Class</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Top Speed</span>
+          <strong>70 km/h</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Operational Range</span>
+          <strong>450 km</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <article class="card full">
+        <div class="eyebrow">K2 전차 한눈에 보기</div>
+        <h2>공개 자료 기준으로 정리한 한국형 하이엔드 MBT</h2>
+        <p class="section-copy">
+          이 페이지는 `k2_analysis.pdf`의 정리 기준을 따라 공식 공개값과 보조 공개자료를 구분해 구성했다.
+          따라서 장갑 내부 적층 구조, ERA 세부 형식, 연료용량, 자동장전기 즉응탄 분할처럼 공식 확인이 약한
+          항목은 과장하지 않고 제외했다. 핵심은 K2를 단순한 화력 플랫폼이 아니라 자동화, 자세 제어, 디지털
+          전장 연동, 현지화 사업 모델이 결합된 체계 제품으로 읽는 데 있다.
+        </p>
+      </article>
+
+      <article class="card full">
+        <div class="eyebrow">핵심 스펙 카드</div>
+        <div class="spec-grid">
+          <div class="spec-card">
+            <span class="spec-label">승무원</span>
+            <span class="spec-value">3명</span>
+          </div>
+          <div class="spec-card">
+            <span class="spec-label">엔진</span>
+            <span class="spec-value">1,500hp</span>
+          </div>
+          <div class="spec-card">
+            <span class="spec-label">주포</span>
+            <span class="spec-value">120mm / L55</span>
+          </div>
+          <div class="spec-card">
+            <span class="spec-label">방호</span>
+            <span class="spec-value">복합 + 반응장갑</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card wide">
+        <div class="scanline"></div>
+        <div class="eyebrow">성능 분석</div>
+        <h2>공개 자료가 보여주는 다섯 가지 경쟁력</h2>
+        <div class="analysis-grid">
+          <div class="analysis-box">
+            <h3>화력</h3>
+            <p>120mm/L55 활강포, 자동장전장치, 자동 탄피 추출, 헌터킬러 FCS가 결합된 구조가 K2 화력의 본체다.</p>
+          </div>
+          <div class="analysis-box">
+            <h3>기동성</h3>
+            <p>1,500마력 파워팩과 ISU 유기압 현수장치는 최고속도보다 험지에서 자세를 제어하며 포를 살리는 기동을 지향한다.</p>
+          </div>
+          <div class="analysis-box">
+            <h3>방호 설계</h3>
+            <p>복합장갑과 반응장갑이 기본 축이며, 최근 공개 흐름은 APS와 추가 장갑을 포함하는 성장형 플랫폼으로 읽힌다.</p>
+          </div>
+          <div class="analysis-box">
+            <h3>디지털 전장</h3>
+            <p>KCPS·KGPS, 사격통제컴퓨터, 레이저경고장치, BMS·C4I 연동은 K2를 센서와 지휘통제가 묶인 데이터 플랫폼으로 만든다.</p>
+          </div>
+          <div class="analysis-box">
+            <h3>정비성과 사업성</h3>
+            <p>Built-in training, troubleshooting, 국산 파워팩 확대, 현지 MRO 패키지는 운용 가용성과 수출 후속지원 경쟁력을 같이 끌어올린다.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="card side">
+        <div class="scanline"></div>
+        <div class="eyebrow">비교 관점</div>
+        <h2>Leopard 2A7과 Abrams 사이에서 읽는 K2</h2>
+        <p>
+          PDF의 비교 프레임에 따르면 K2는 Leopard 2A7, M1A2 Abrams보다 가볍고 승무원이 1명 적다.
+          반면 1,500마력급 출력과 120mm 활강포는 유지한다. 요약하면 K2의 장점은 중량 대비 출력과 자동화,
+          한계는 공개 축적치와 실전 레퍼런스의 절대량 부족이다.
+        </p>
+      </article>
+
+      <article class="card wide">
+        <div class="scanline"></div>
+        <div class="eyebrow">획득 / 수출</div>
+        <h2>국내 양산과 폴란드 현지화로 확장된 사업 구조</h2>
+        <div class="map-panel" aria-hidden="true">
+          <div class="map-grid"></div>
+          <div class="map-shape korea"></div>
+          <div class="map-shape poland"></div>
+          <div class="map-link"></div>
+          <span class="map-label korea">Korea Production Base</span>
+          <span class="map-label poland">Poland Localization</span>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <strong>01. 2012-2014 국내 초도 / 2차 양산</strong>
+            <p>초도양산 100대 계획과 2차 양산 의결은 K2가 실전 배치 단계로 넘어가는 출발점이 됐다.</p>
+          </div>
+          <div class="timeline-item">
+            <strong>02. 2020-2024 3차 / 4차 양산</strong>
+            <p>3차 양산 계약과 4차 양산 승인, 국산 1,500마력 변속기 적용 의결은 완전 국산 파워팩 전환의 정책적 확인이었다.</p>
+          </div>
+          <div class="timeline-item">
+            <strong>03. 2022 폴란드 1차 계약</strong>
+            <p>1,000대 기본계약과 180대 1차 실행계약은 K2의 첫 대규모 해외 수출이자 신속 납품 모델의 형성으로 해석된다.</p>
+          </div>
+          <div class="timeline-item">
+            <strong>04. 2025 폴란드 2차 추가계약</strong>
+            <p>K2PL 개발, 현지생산, 기술협력, 정비·지원 패키지가 포함되며 단순 대수 계약보다 훨씬 두꺼운 사업 구조가 됐다.</p>
+          </div>
+          <div class="timeline-item">
+            <strong>05. 2026 현지 생산·정비 협력</strong>
+            <p>폴란드형 K2와 계열 장비의 현지 생산·정비 협력 계약은 K2가 완제품 수출을 넘어 플랫폼 현지화 단계에 진입했음을 보여준다.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="card side">
+        <div class="scanline"></div>
+        <div class="eyebrow">사업 해석</div>
+        <h2>K2는 왜 플랫폼 패키지로 읽혀야 하나</h2>
+        <p>
+          보고서는 K2를 저렴한 서방 전차 대안으로 보지 않는다. 핵심은 납기, 현지화, 기술협력, MRO, 교육,
+          파생형 확장을 함께 파는 고가치 패키지라는 점이다. 이 해석은 폴란드 2차 계약과 2026년 현지 생산·정비
+          협력 흐름에서 가장 선명하게 드러난다.
+        </p>
+      </article>
+
+      <article class="card full">
+        <div class="scanline"></div>
+        <div class="eyebrow">사격통제 프로세스</div>
+        <div class="analysis-grid">
+          <div class="quote-panel">
+            <strong>헌터킬러와 데이터 루프</strong>
+            <p>
+              전차장과 포수는 KCPS·KGPS 계열 조준체계로 표적을 획득하고, 사격통제컴퓨터는 거리·자세·탄종
+              정보를 결합해 탄도 계산과 자동추적을 수행한다. K2의 화력은 포 그 자체보다 센서와 계산 루프에 가깝다.
+            </p>
+          </div>
+          <div class="quote-panel">
+            <strong>자동장전과 재교전 리듬</strong>
+            <p>
+              대표 절차는 탄 선택, 이송·정렬, 장입, 폐쇄기 닫힘, 안전 인터록 확인, 발사, 탄피 추출, 탄착 관측과
+              수정사격으로 이어진다. 자동장전 구조 덕분에 다표적 교전에서 재교전 리듬이 빨라진다.
+            </p>
+          </div>
+        </div>
+        <ul class="insight-list">
+          <li>표적 획득 단계에서는 전차장과 포수가 탐지·식별·우선순위 부여를 나눠 수행한다.</li>
+          <li>거리측정기, INS, 자세 센서, 포탑·포신 제어 정보가 함께 들어가야 K2의 사격 정확도를 설명할 수 있다.</li>
+          <li>차체 측 ISU 자세 제어와 포탑 측 안정화 계통이 결합되기 때문에 기동 중 사격 능력이 K2 설명의 핵심이 된다.</li>
+          <li>웹 콘텐츠 관점에서는 발사율 숫자보다 자동장전형 3인승, 디지털 FCS, BMS 연동, 현지화 패키지를 전면에 두는 편이 안전하다.</li>
+        </ul>
+        <div class="diagram-grid">
+          <div class="diagram-card">
+            <h3>승무원·포탑 배치 개념도</h3>
+            <p>차체 전방 조종수, 차체 후방 파워팩, 포탑 내부 포수·전차장·자동장전장치·주포의 관계를 기능 배치 기준으로 표현했다.</p>
+            <div class="mermaid">
+flowchart LR
+  subgraph Hull["차체"]
+    D["조종수<br/>차체 전방"]
+    P["파워팩<br/>차체 후방"]
+  end
+
+  subgraph Turret["포탑"]
+    G["포수<br/>조준·추적·사격"]
+    C["전차장<br/>탐색·지시·교전결심"]
+    A["버슬 자동장전장치<br/>탄 선택·장입"]
+    M["120mm 주포"]
+  end
+
+  D --- G
+  G --- C
+  C --- A
+  A --- M
+  P --- Turret
+            </div>
+          </div>
+          <div class="diagram-card">
+            <h3>사격 절차 흐름도</h3>
+            <p>표적 획득에서 탄착 관측과 재교전에 이르는 대표 절차를 공개 자료 수준으로 단순화해 정리했다.</p>
+            <div class="mermaid">
+flowchart TD
+  A["표적 획득<br/>전차장/포수"] --> B["식별·위협판단<br/>탄종 선택"]
+  B --> C["거리·자세 정보 취득<br/>LRF / INS / 자세센서"]
+  C --> D["사격통제컴퓨터 탄도 계산<br/>포·포탑·조준경 제어"]
+  D --> E["포 정렬·안정화<br/>차체 자세 제어"]
+  E --> F["자동장전장치 작동<br/>탄 선택·이송·장입"]
+  F --> G["안전 인터록 확인<br/>장전 완료·폐쇄기·발사조건"]
+  G --> H["발사"]
+  H --> I["주퇴·복좌·탄피 추출"]
+  I --> J["탄착 관측·수정·재교전"]
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+    mermaid.initialize({
+      startOnLoad: true,
+      securityLevel: "loose",
+      theme: "base",
+      themeVariables: {
+        background: "#0f1510",
+        primaryColor: "#18221a",
+        primaryTextColor: "#edf1e6",
+        primaryBorderColor: "#b7c77c",
+        lineColor: "#d8b96b",
+        secondaryColor: "#1d2920",
+        tertiaryColor: "#121812",
+        fontFamily: "Noto Sans KR, Malgun Gothic, sans-serif"
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Crystal Rush</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="game-shell">
+      <header class="hud" aria-label="Game status">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <strong>Crystal Rush</strong>
+        </div>
+        <div class="stat">
+          <span>Score</span>
+          <b id="score">0</b>
+        </div>
+        <div class="stat">
+          <span>Lives</span>
+          <b id="lives">3</b>
+        </div>
+        <div class="stat">
+          <span>Time</span>
+          <b id="time">0s</b>
+        </div>
+        <div class="stat">
+          <span>Best</span>
+          <b id="best">0</b>
+        </div>
+        <div class="status-pill" id="phase">ready</div>
+        <button class="icon-button" id="pauseButton" type="button" aria-label="Pause" title="Pause">||</button>
+      </header>
+
+      <main class="stage" aria-label="Crystal Rush game">
+        <canvas id="gameCanvas"></canvas>
+        <section class="overlay" id="overlay" aria-live="polite">
+          <h1 id="overlayTitle">Crystal Rush</h1>
+          <p id="overlayScore">Best 0</p>
+          <button id="startButton" type="button">Start Run</button>
+        </section>
+
+        <nav class="touch-pad" aria-label="Movement">
+          <button type="button" data-dir="up" aria-label="Move up">^</button>
+          <button type="button" data-dir="left" aria-label="Move left">&lt;</button>
+          <button type="button" data-dir="down" aria-label="Move down">v</button>
+          <button type="button" data-dir="right" aria-label="Move right">&gt;</button>
+        </nav>
+      </main>
+    </div>
+
+    <script type="module" src="./src/main.mjs"></script>
+  </body>
+</html>
