@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>개인 기록 | 2026 북중미 월드컵</title>
+    <link rel="stylesheet" href="./worldcup.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./worldcup.html">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>2026 북중미 월드컵</span>
+      </a>
+      <nav class="nav" aria-label="월드컵 메뉴">
+        <a href="./worldcup-matches.html">대진표</a>
+        <a href="./worldcup-groups.html">진출 가능성</a>
+        <a href="./worldcup-squads.html">스쿼드</a>
+        <a class="is-active" href="./worldcup-records.html">개인 기록</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <div class="page-head">
+        <h1>개인 기록</h1>
+        <a class="back-link" href="./worldcup.html">월드컵</a>
+      </div>
+      <section class="panel">
+        <div class="filters" id="recordFilters"></div>
+        <div class="records-table-wrap">
+          <table class="records-table">
+            <thead>
+              <tr>
+                <th>선수</th>
+                <th>국가</th>
+                <th>득점</th>
+                <th>도움</th>
+                <th>세이브</th>
+                <th>경고</th>
+                <th>퇴장</th>
+              </tr>
+            </thead>
+            <tbody id="recordsBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { allPlayers } from "./worldcup-data.js";
+
+      const recordCategories = ["전체", "득점", "도움", "세이브", "경고"];
+      let selectedRecord = "전체";
+
+      function renderRecordFilters() {
+        const filters = document.getElementById("recordFilters");
+        filters.innerHTML = recordCategories.map((category) => `<button type="button" class="${category === selectedRecord ? "is-active" : ""}" data-record="${category}">${category}</button>`).join("");
+        filters.querySelectorAll("button").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedRecord = button.dataset.record;
+            renderRecordFilters();
+            renderRecords();
+          });
+        });
+      }
+
+      function renderRecords() {
+        const sortKey = {
+          "전체": "goals",
+          "득점": "goals",
+          "도움": "assists",
+          "세이브": "saves",
+          "경고": "yellows"
+        }[selectedRecord];
+        const rows = allPlayers().sort((a, b) => b[sortKey] - a[sortKey] || b.goals - a.goals || a.name.localeCompare(b.name));
+        document.getElementById("recordsBody").innerHTML = rows.map((player) => `
+          <tr>
+            <td><b>${player.name}</b><br><span class="tiny-label">${player.position}</span></td>
+            <td>${player.team}</td>
+            <td>${player.goals}</td>
+            <td>${player.assists}</td>
+            <td>${player.saves}</td>
+            <td>${player.yellows}</td>
+            <td>${player.reds}</td>
+          </tr>
+        `).join("");
+      }
+
+      renderRecordFilters();
+      renderRecords();
+    </script>
+  </body>
+</html>

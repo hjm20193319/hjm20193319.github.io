@@ -24,6 +24,7 @@ const hint = document.querySelector('#hint');
 let state = createJuggleState();
 let best = Number(localStorage.getItem(STORAGE_KEY) || 0);
 let lastTime = performance.now();
+let lastLiftAt = 0;
 let scale = 1;
 let offsetX = 0;
 let offsetY = 0;
@@ -39,11 +40,11 @@ function resizeCanvas() {
   offsetY = (rect.height - config.height * scale) / 2;
 }
 
-function toFieldPoint(event) {
+function toFieldPoint(clientX, clientY) {
   const rect = canvas.getBoundingClientRect();
   return {
-    x: (event.clientX - rect.left - offsetX) / scale,
-    y: (event.clientY - rect.top - offsetY) / scale,
+    x: (clientX - rect.left - offsetX) / scale,
+    y: (clientY - rect.top - offsetY) / scale,
   };
 }
 
@@ -59,13 +60,50 @@ function reset() {
   lastTime = performance.now();
 }
 
-function handleLift(event) {
-  event.preventDefault();
-  const point = toFieldPoint(event);
+function liftAtClientPoint(clientX, clientY) {
+  const now = performance.now();
+  if (now - lastLiftAt < 90) {
+    return;
+  }
+
+  lastLiftAt = now;
+  const point = toFieldPoint(clientX, clientY);
   state = liftBall(state, point.x, point.y);
 }
 
-canvas.addEventListener('pointerdown', handleLift);
+function preventIfPossible(event) {
+  if (event.cancelable) {
+    event.preventDefault();
+  }
+}
+
+function handlePointerLift(event) {
+  preventIfPossible(event);
+  liftAtClientPoint(event.clientX, event.clientY);
+}
+
+function handleTouchLift(event) {
+  const touch = event.changedTouches[0];
+  if (!touch) {
+    return;
+  }
+
+  preventIfPossible(event);
+  liftAtClientPoint(touch.clientX, touch.clientY);
+}
+
+function handleMouseLift(event) {
+  preventIfPossible(event);
+  liftAtClientPoint(event.clientX, event.clientY);
+}
+
+if (window.PointerEvent) {
+  canvas.addEventListener('pointerdown', handlePointerLift, { passive: false });
+} else {
+  canvas.addEventListener('mousedown', handleMouseLift);
+}
+
+canvas.addEventListener('touchstart', handleTouchLift, { passive: false });
 startButton.addEventListener('click', () => {
   if (state.phase === 'gameover') {
     reset();

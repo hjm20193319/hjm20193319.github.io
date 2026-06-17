@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>진출 가능성 | 2026 북중미 월드컵</title>
+    <link rel="stylesheet" href="./worldcup.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./worldcup.html">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>2026 북중미 월드컵</span>
+      </a>
+      <nav class="nav" aria-label="월드컵 메뉴">
+        <a href="./worldcup-matches.html">대진표</a>
+        <a class="is-active" href="./worldcup-groups.html">진출 가능성</a>
+        <a href="./worldcup-squads.html">스쿼드</a>
+        <a href="./worldcup-records.html">개인 기록</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <div class="page-head">
+        <h1>진출 가능성</h1>
+        <a class="back-link" href="./worldcup.html">월드컵</a>
+      </div>
+      <section class="panel">
+        <div class="tabs" id="groupTabs"></div>
+        <div class="group-grid" id="groupGrid"></div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { groups, goalDiff, probability } from "./worldcup-data.js";
+
+      let selectedGroupSet = ["A", "B", "C", "D", "E", "F"];
+
+      function scenarioText(rows) {
+        const leader = rows[0];
+        const third = rows[2];
+        if (leader[6] >= 3 && goalDiff(leader) >= 3) {
+          return `${leader[0]} 유리 · ${third[0]} 승점 필요`;
+        }
+        if (leader[6] === third[6]) {
+          return "승점 동률 · 골득실 중요";
+        }
+        return `${leader[0]} 선두 · 3위권 경쟁`;
+      }
+
+      function renderGroupTabs() {
+        const tabs = document.getElementById("groupTabs");
+        const sets = [
+          ["A-F", ["A", "B", "C", "D", "E", "F"]],
+          ["G-L", ["G", "H", "I", "J", "K", "L"]],
+          ["개최국", ["A", "B", "D", "K", "L", "J"]]
+        ];
+        tabs.innerHTML = sets.map((set) => `<button type="button" class="${set[1].join("") === selectedGroupSet.join("") ? "is-active" : ""}" data-groups="${set[1].join(",")}">${set[0]}</button>`).join("");
+        tabs.querySelectorAll("button").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedGroupSet = button.dataset.groups.split(",");
+            renderGroupTabs();
+            renderGroups();
+          });
+        });
+      }
+
+      function renderGroups() {
+        const grid = document.getElementById("groupGrid");
+        grid.innerHTML = selectedGroupSet.map((key) => {
+          const rows = groups[key].slice().sort((a, b) => b[6] - a[6] || goalDiff(b) - goalDiff(a) || b[4] - a[4]);
+          return `
+            <article class="group-card">
+              <h3><span>Group ${key}</span><span class="status-tag">TOP 2 + 3위권</span></h3>
+              <table class="standings">
+                <thead><tr><th>국가</th><th>승점</th><th>득실</th><th>GF</th><th>확률</th></tr></thead>
+                <tbody>
+                  ${rows.map((row) => `<tr><td>${row[0]}</td><td>${row[6]}</td><td>${goalDiff(row) > 0 ? "+" : ""}${goalDiff(row)}</td><td>${row[4]}</td><td>${probability(row)}%</td></tr>`).join("")}
+                </tbody>
+              </table>
+              <p class="scenario">${scenarioText(rows)}</p>
+            </article>
+          `;
+        }).join("");
+      }
+
+      renderGroupTabs();
+      renderGroups();
+    </script>
+  </body>
+</html>

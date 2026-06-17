@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>2026 &#xBD81;&#xC911;&#xBBF8; &#xC6D4;&#xB4DC;&#xCEF5;</title>
+    <link rel="stylesheet" href="./worldcup.css">
+  </head>
+  <body class="dashboard-page">
+    <header class="dash-header">
+      <a class="dash-brand" href="./index.html">2026 &#xBD81;&#xC911;&#xBBF8; &#xC6D4;&#xB4DC;&#xCEF5;</a>
+      <nav class="dash-nav" aria-label="World Cup dashboard navigation">
+        <a class="is-active" href="./worldcup.html">&#xB300;&#xC2DC;&#xBCF4;&#xB4DC;</a>
+        <a href="./worldcup-matches.html">&#xACBD;&#xAE30;</a>
+        <a href="./worldcup-groups.html">&#xC870;&#xBCC4; &#xC21C;&#xC704;</a>
+        <a href="./worldcup-matches.html">&#xB300;&#xC9C4;&#xD45C;</a>
+        <a href="./worldcup-records.html">&#xAE30;&#xB85D;</a>
+        <a href="#">&#xB274;&#xC2A4;</a>
+        <a href="#cities">&#xAC1C;&#xCD5C; &#xB3C4;&#xC2DC;</a>
+        <a href="#">&#xC815;&#xBCF4;</a>
+      </nav>
+      <div class="dash-tools" aria-label="Dashboard tools">
+        <button type="button" aria-label="Search">⌕</button>
+        <button type="button">KO</button>
+        <button type="button" aria-label="Theme">◐</button>
+        <button type="button" aria-label="Menu">☰</button>
+      </div>
+    </header>
+
+    <main class="dash-shell">
+      <section class="dash-hero" aria-label="2026 North America World Cup">
+        <div class="stadium stadium-left"></div>
+        <div class="cityline cityline-left"></div>
+        <div class="pyramid"></div>
+        <div class="stadium stadium-right"></div>
+        <div class="confetti"></div>
+        <h1>2026 &#xBD81;&#xC911;&#xBBF8; &#xC6D4;&#xB4DC;&#xCEF5;</h1>
+        <p>&#xBBF8;&#xAD6D; · &#xCE90;&#xB098;&#xB2E4; · &#xBA55;&#xC2DC;&#xCF54; <span>|</span> 2026.06.11 - 07.19</p>
+        <div class="host-row">
+          <div class="host-medal red"><b>USA</b><span>11&#xAC1C; &#xB3C4;&#xC2DC;</span></div>
+          <div class="host-medal blue"><b>CANADA</b><span>2&#xAC1C; &#xB3C4;&#xC2DC;</span></div>
+          <div class="host-medal green"><b>MEXICO</b><span>3&#xAC1C; &#xB3C4;&#xC2DC;</span></div>
+        </div>
+      </section>
+
+      <section class="dash-grid" aria-label="World Cup dashboard">
+        <aside class="dash-panel bracket-panel">
+          <div class="panel-title">
+            <h2>&#xB300;&#xC9C4;&#xD45C;</h2>
+            <a href="./worldcup-matches.html">↗</a>
+          </div>
+          <div class="bracket-tabs">
+            <button class="is-active" type="button">&#xD1A0;&#xB108;&#xBA3C;&#xD2B8;</button>
+            <button type="button">&#xC804;&#xCCB4; &#xB300;&#xC9C4;</button>
+          </div>
+          <div class="bracket-list" id="bracketList"></div>
+        </aside>
+
+        <section class="dash-panel match-board">
+          <div class="panel-title">
+            <h2>&#xACBD;&#xAE30;</h2>
+            <div class="date-control">
+              <span>2026.06.11</span>
+              <button type="button" aria-label="Previous date">‹</button>
+              <button type="button" aria-label="Next date">›</button>
+            </div>
+          </div>
+          <div class="board-tabs">
+            <button class="is-active" type="button">&#xC804;&#xCCB4;</button>
+            <button type="button">&#xADF8;&#xB8F9; &#xC2A4;&#xD14C;&#xC774;&#xC9C0;</button>
+            <button type="button">&#xD1A0;&#xB108;&#xBA3C;&#xD2B8;</button>
+          </div>
+          <div class="game-list" id="gameList"></div>
+          <a class="panel-link" href="./worldcup-matches.html">&#xC804;&#xCCB4; &#xACBD;&#xAE30; &#xBCF4;&#xAE30;</a>
+        </section>
+
+        <section class="dash-panel detail-board" id="detailBoard"></section>
+
+        <aside class="right-rail">
+          <section class="dash-panel advance-panel">
+            <div class="panel-title compact">
+              <h2>&#xC9C4;&#xCD9C; &#xAC00;&#xB2A5;&#xC131;</h2>
+              <span>ⓘ</span>
+            </div>
+            <table class="mini-table" id="advanceTable"></table>
+            <a class="panel-link" href="./worldcup-groups.html">&#xBAA8;&#xB4E0; &#xC870; &#xBCF4;&#xAE30;</a>
+          </section>
+
+          <section class="dash-panel squad-panel" id="squadPanel"></section>
+
+          <section class="dash-panel records-panel">
+            <div class="panel-title compact">
+              <h2>&#xAC1C;&#xC778; &#xAE30;&#xB85D;</h2>
+            </div>
+            <div class="record-tabs">
+              <button class="is-active" type="button">&#xB4DD;&#xC810;</button>
+              <button type="button">&#xB3C4;&#xC6C0;</button>
+              <button type="button">&#xC288;&#xD305;</button>
+              <button type="button">&#xD328;&#xC2A4; &#xC131;&#xACF5;&#xB960;</button>
+            </div>
+            <table class="mini-table records" id="recordsTable"></table>
+            <a class="panel-link" href="./worldcup-records.html">&#xC804;&#xCCB4; &#xC21C;&#xC704; &#xBCF4;&#xAE30;</a>
+          </section>
+        </aside>
+      </section>
+
+      <section class="city-strip" id="cities">
+        <div>
+          <h2>&#xAC1C;&#xCD5C; &#xB3C4;&#xC2DC;</h2>
+          <p>16&#xAC1C; &#xB3C4;&#xC2DC;</p>
+          <ul>
+            <li><span class="dot usa"></span>USA</li>
+            <li><span class="dot can"></span>CANADA</li>
+            <li><span class="dot mex"></span>MEXICO</li>
+          </ul>
+        </div>
+        <div class="city-route" id="cityRoute"></div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { allPlayers, buildStandings, cities, completedMatches, matches, probability, squads } from "./worldcup-data.js";
+
+      const text = {
+        group: "\uADF8\uB8F9",
+        groupStage: "\uADF8\uB8F9 \uC2A4\uD14C\uC774\uC9C0",
+        matchBefore: "\uACBD\uAE30 \uC804",
+        preview: "\uD504\uB9AC\uBDF0",
+        lineup: "\uB77C\uC778\uC5C5",
+        record: "\uAE30\uB85D",
+        h2h: "H2H",
+        recent: "\uCD5C\uADFC 5\uACBD\uAE30",
+        ranking: "FIFA \uB7AD\uD0B9",
+        form: "\uCD5C\uADFC \uD3FC",
+        avgGoals: "\uD3C9\uADE0 \uB4DD\uC810",
+        avgAgainst: "\uD3C9\uADE0 \uC2E4\uC810",
+        weather: "\uB9D1\uC74C",
+        humidity: "\uC2B5\uB3C4",
+        wind: "\uBC14\uB78C",
+        coach: "\uAC10\uB3C5",
+        allSquad: "\uC804\uCCB4 \uBCF4\uAE30",
+        rank: "\uC21C\uC704",
+        player: "\uC120\uC218",
+        team: "\uD300",
+        score: "\uAE30\uB85D",
+        first: "1\uC704",
+        second: "2\uC704",
+        r32: "16\uAC15 \uC9C4\uCD9C"
+      };
+
+      const countryCode = {
+        Mexico: "MEX",
+        "South Africa": "RSA",
+        "South Korea": "KOR",
+        Czechia: "CZE",
+        Canada: "CAN",
+        "Bosnia and Herzegovina": "BIH",
+        Qatar: "QAT",
+        Switzerland: "SUI",
+        Haiti: "HAI",
+        Scotland: "SCO",
+        Brazil: "BRA",
+        Morocco: "MAR",
+        "United States": "USA",
+        Paraguay: "PAR",
+        Australia: "AUS",
+        Turkiye: "TUR",
+        Germany: "GER",
+        Curacao: "CUW",
+        Argentina: "ARG",
+        Algeria: "ALG",
+        England: "ENG",
+        Croatia: "CRO",
+        Portugal: "POR",
+        "DR Congo": "COD",
+        Ghana: "GHA",
+        Panama: "PAN"
+      };
+
+      let selectedMatch = matches[0].id;
+
+      function codeFor(team) {
+        return countryCode[team] || team.slice(0, 3).toUpperCase();
+      }
+
+      function scoreFor(match) {
+        return match.score ? `${match.score[0]}-${match.score[1]}` : "-";
+      }
+
+      function statusFor(match) {
+        if (match.status === "done") return "\uC885\uB8CC";
+        if (match.status === "checking") return "\uD655\uC778\uC911";
+        return text.matchBefore;
+      }
+
+      function selected() {
+        return matches.find((match) => match.id === selectedMatch) || matches[0];
+      }
+
+      function renderBracket() {
+        const seeds = [
+          ["1A", "Mexico"], ["2B", "Canada"], ["1C", "Scotland"], ["2D", "Australia"],
+          ["1E", "Germany"], ["2F", "Netherlands"], ["1G", "Iran"], ["2H", "Saudi Arabia"]
+        ];
+        const placeholders = ["W 16-1", "W 16-2", "W 16-3", "W 16-4", "W 16-6", "W 16-8"];
+        document.getElementById("bracketList").innerHTML = `
+          <h3>16\uAC15</h3>
+          ${seeds.map((seed, index) => `<button class="seed ${index === 0 ? "is-live" : ""}" type="button"><span>${codeFor(seed[1])}</span>${seed[0]}</button>`).join("")}
+          <h3>8\uAC15</h3>
+          ${placeholders.map((item) => `<button class="seed dim" type="button"><span>W</span>${item}</button>`).join("")}
+          <h3>\uC900\uACB0\uC2B9</h3>
+          ${["W QF-1", "W QF-2", "W QF-3", "W QF-4"].map((item) => `<button class="seed dim" type="button"><span>W</span>${item}</button>`).join("")}
+          <h3>\uACB0\uC2B9</h3>
+          ${["W SF-1", "W SF-2"].map((item) => `<button class="seed dim final" type="button"><span>W</span>${item}</button>`).join("")}
+        `;
+      }
+
+      function renderGames() {
+        const list = document.getElementById("gameList");
+        list.innerHTML = matches.slice(0, 8).map((match) => `
+          <button class="game-card ${match.id === selectedMatch ? "is-active" : ""}" type="button" data-match="${match.id}">
+            <time>${match.date.slice(5).replace("-", ".")}<br>${match.time}</time>
+            <span class="teams">
+              <b><i>${codeFor(match.home)}</i>${match.home}</b>
+              <b><i>${codeFor(match.away)}</i>${match.away}</b>
+              <small>${match.stadium}</small>
+            </span>
+            <span class="game-meta">${text.group} ${match.group}<br>${statusFor(match)}</span>
+          </button>
+        `).join("");
+
+        list.querySelectorAll("[data-match]").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedMatch = button.dataset.match;
+            renderGames();
+            renderDetail();
+          });
+        });
+      }
+
+      function renderDetail() {
+        const match = selected();
+        document.getElementById("detailBoard").innerHTML = `
+          <div class="panel-title">
+            <h2>\uACBD\uAE30 \uC0C1\uC138</h2>
+            <button type="button">\uACBD\uAE30 \uC785\uB825 ♧</button>
+          </div>
+          <div class="detail-score">
+            <div><span class="flag-card">${codeFor(match.home)}</span><b>${match.home}</b></div>
+            <strong>${scoreFor(match).replace("-", "20:00")}</strong>
+            <div><span class="flag-card">${codeFor(match.away)}</span><b>${match.away}</b></div>
+          </div>
+          <p class="detail-sub">${text.group} ${match.group} · ${match.date} · ${match.stadium}</p>
+          <div class="detail-tabs">
+            <button class="is-active" type="button">${text.preview}</button>
+            <button type="button">${text.lineup}</button>
+            <button type="button">${text.record}</button>
+            <button type="button">${text.h2h}</button>
+          </div>
+          <div class="preview-stats">
+            <div>
+              <span>${text.recent}</span>
+              <b class="form-dots"><i></i><i></i><em></em><i></i><i></i></b>
+            </div>
+            <div class="h2h-score">
+              <span>\uC0C1\uB300 \uC804\uC801</span>
+              <b>3<span>\uC2B9</span> 1<span>\uBB34</span> 0<span>\uC2B9</span></b>
+            </div>
+            <div>
+              <span>${match.away}</span>
+              <b class="form-dots away"><em></em><i></i><em></em><i></i><em></em></b>
+            </div>
+          </div>
+          <div class="bars">
+            <p><span>15\uC704</span><b>${text.ranking}</b><span>66\uC704</span></p>
+            <div><i style="width:42%"></i><em style="width:32%"></em></div>
+            <p><span>1.60</span><b>${text.avgGoals}</b><span>0.80</span></p>
+            <div><i style="width:54%"></i><em style="width:28%"></em></div>
+            <p><span>0.90</span><b>${text.avgAgainst}</b><span>1.40</span></p>
+            <div><i style="width:38%"></i><em style="width:58%"></em></div>
+          </div>
+          <div class="weather-row">
+            <span>☀ ${text.weather} 22°C</span>
+            <span>☁ ${text.humidity} 48%</span>
+            <span>≋ ${text.wind} 9km/h</span>
+          </div>
+        `;
+      }
+
+      function renderAdvance() {
+        const rows = buildStandings("A").slice(0, 4);
+        document.getElementById("advanceTable").innerHTML = `
+          <thead><tr><th>%</th><th>${text.first}</th><th>${text.second}</th><th>${text.r32}</th></tr></thead>
+          <tbody>
+            ${rows.map((row, index) => {
+              const p = probability(row);
+              return `<tr><td>${row[0]}</td><td>${Math.max(4, p - index * 12)}%</td><td>${Math.max(8, 30 - index * 3)}%</td><td>${Math.max(22, p + 8 - index * 7)}%</td></tr>`;
+            }).join("")}
+          </tbody>
+        `;
+      }
+
+      function renderSquad() {
+        const team = squads[0];
+        document.getElementById("squadPanel").innerHTML = `
+          <div class="panel-title compact">
+            <h2>\uC2A4\uCFFC\uB4DC</h2>
+            <a href="./worldcup-squads.html">${text.allSquad} ›</a>
+          </div>
+          <div class="squad-head"><span class="flag-card">${codeFor(team.team)}</span><b>${team.team}</b><small>${text.coach} ${team.coach}<br>4-3-3</small></div>
+          <div class="player-row">
+            ${team.players.slice(0, 5).map((player, index) => `
+              <div class="player-card">
+                <span class="avatar">${player[0].split(" ").map((part) => part[0]).join("").slice(0, 2)}</span>
+                <b>${player[0]}</b>
+                <small>${player[1]}<br>${28 + index}\uC138</small>
+              </div>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      function renderRecords() {
+        const players = allPlayers().sort((a, b) => b.goals - a.goals).slice(0, 5);
+        document.getElementById("recordsTable").innerHTML = `
+          <thead><tr><th>${text.rank}</th><th>${text.player}</th><th>${text.team}</th><th>${text.score}</th></tr></thead>
+          <tbody>
+            ${players.map((player, index) => `<tr><td>${index + 1}</td><td>${player.name}</td><td>${player.team}</td><td>${player.goals || player.assists || player.saves}</td></tr>`).join("")}
+          </tbody>
+        `;
+      }
+
+      function renderCities() {
+        document.getElementById("cityRoute").innerHTML = cities.map(([city, host]) => `
+          <div class="city-node ${host.toLowerCase()}">
+            <span></span>
+            <b>${city}</b>
+          </div>
+        `).join("");
+      }
+
+      renderBracket();
+      renderGames();
+      renderDetail();
+      renderAdvance();
+      renderSquad();
+      renderRecords();
+      renderCities();
+    </script>
+  </body>
+</html>
