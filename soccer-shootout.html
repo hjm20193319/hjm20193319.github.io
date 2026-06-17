@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Penalty Pulse</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --grass: #155f3b;
+        --grass-deep: #0d3b2a;
+        --line: rgba(255, 255, 255, 0.22);
+        --panel: rgba(10, 22, 18, 0.82);
+        --text: #f7fff8;
+        --muted: #b9c8bd;
+        --gold: #f7d15a;
+        --sky: #71b8d8;
+        --danger: #ff6f61;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+        overflow: hidden;
+        background:
+          linear-gradient(180deg, rgba(113, 184, 216, 0.24), transparent 36%),
+          radial-gradient(circle at 18% 18%, rgba(247, 209, 90, 0.14), transparent 20%),
+          linear-gradient(180deg, #0e2f2a, #071512 78%);
+        color: var(--text);
+        font-family: "Malgun Gothic", "Segoe UI", system-ui, sans-serif;
+      }
+
+      button {
+        min-width: 44px;
+        min-height: 44px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text);
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      .game-shell {
+        display: grid;
+        min-height: 100dvh;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+      }
+
+      .hud {
+        display: grid;
+        grid-template-columns: minmax(132px, 1fr) repeat(4, minmax(64px, 96px));
+        align-items: center;
+        gap: 8px;
+        padding: 10px clamp(10px, 2.4vw, 18px);
+        border-bottom: 1px solid var(--line);
+        background: rgba(4, 14, 12, 0.84);
+        backdrop-filter: blur(10px);
+      }
+
+      .brand {
+        min-width: 0;
+        font-size: 17px;
+        font-weight: 900;
+      }
+
+      .brand span {
+        display: block;
+        overflow: hidden;
+        color: var(--gold);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .stat {
+        min-width: 0;
+        padding: 6px 8px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .stat span {
+        display: block;
+        overflow: hidden;
+        color: var(--muted);
+        font-size: 11px;
+        text-transform: uppercase;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .stat b {
+        display: block;
+        overflow: hidden;
+        font-size: 18px;
+        line-height: 1.1;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .stage {
+        position: relative;
+        min-height: 0;
+        background: linear-gradient(180deg, rgba(113, 184, 216, 0.16), rgba(13, 59, 42, 0.1));
+      }
+
+      #pitch {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      .overlay {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        display: grid;
+        width: min(360px, calc(100% - 32px));
+        gap: 12px;
+        justify-items: center;
+        padding: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 8px;
+        background: rgba(4, 14, 12, 0.88);
+        box-shadow: 0 20px 70px rgba(0, 0, 0, 0.34);
+        text-align: center;
+        transform: translate(-50%, -50%);
+      }
+
+      .overlay[hidden] {
+        display: none;
+      }
+
+      .overlay h1 {
+        margin: 0;
+        color: var(--gold);
+        font-size: clamp(30px, 7vw, 48px);
+        line-height: 1;
+      }
+
+      .overlay p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .overlay button,
+      .kick-button {
+        background: var(--gold);
+        color: #172112;
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr minmax(122px, 0.7fr) 1fr;
+        gap: 10px;
+        padding: 10px clamp(10px, 2.4vw, 18px) 14px;
+        border-top: 1px solid var(--line);
+        background: rgba(4, 14, 12, 0.88);
+      }
+
+      .aim-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .power-wrap {
+        display: grid;
+        align-content: center;
+        gap: 5px;
+        min-width: 0;
+      }
+
+      .power-label {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .power-track {
+        height: 12px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .power-fill {
+        width: 62%;
+        height: 100%;
+        background: linear-gradient(90deg, #8ee3a0, var(--gold), var(--danger));
+      }
+
+      @media (max-width: 760px) {
+        .hud {
+          grid-template-columns: 1fr repeat(2, minmax(62px, 82px));
+        }
+
+        .brand {
+          font-size: 15px;
+        }
+
+        .stat:nth-of-type(3),
+        .stat:nth-of-type(4) {
+          display: none;
+        }
+
+        .controls {
+          grid-template-columns: 1fr 96px;
+        }
+
+        .power-wrap {
+          grid-column: 1 / -1;
+          grid-row: 1;
+        }
+
+        .kick-button {
+          grid-column: 2;
+          grid-row: 2;
+        }
+
+        .aim-group {
+          grid-column: 1;
+          grid-row: 2;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-shell">
+      <header class="hud" aria-label="Penalty Pulse status">
+        <div class="brand">
+          <span>Penalty Pulse</span>
+        </div>
+        <div class="stat">
+          <span>Score</span>
+          <b id="score">0</b>
+        </div>
+        <div class="stat">
+          <span>Round</span>
+          <b id="round">1/7</b>
+        </div>
+        <div class="stat">
+          <span>Streak</span>
+          <b id="streak">0</b>
+        </div>
+        <div class="stat">
+          <span>Best</span>
+          <b id="best">0</b>
+        </div>
+      </header>
+
+      <main class="stage" aria-label="Penalty Pulse game">
+        <canvas id="pitch"></canvas>
+        <section class="overlay" id="overlay" aria-live="polite">
+          <h1 id="overlayTitle">Penalty Pulse</h1>
+          <p id="overlayText">골키퍼 움직임을 읽고 빈 곳으로 조준한 뒤 슛하세요.</p>
+          <button id="startButton" type="button">시작</button>
+        </section>
+      </main>
+
+      <footer class="controls" aria-label="Shot controls">
+        <div class="aim-group">
+          <button type="button" data-aim="left" aria-label="Aim left">&lt;</button>
+          <button type="button" data-aim="right" aria-label="Aim right">&gt;</button>
+        </div>
+        <div class="power-wrap" aria-label="Kick power">
+          <div class="power-label">
+            <span>Power</span>
+            <span id="phase">ready</span>
+          </div>
+          <div class="power-track">
+            <div class="power-fill" id="powerFill"></div>
+          </div>
+        </div>
+        <button class="kick-button" id="kickButton" type="button">슛</button>
+      </footer>
+    </div>
+
+    <script type="module" src="./src/soccer-main.mjs"></script>
+  </body>
+</html>
