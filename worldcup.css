@@ -440,6 +440,7 @@ tr.korea-row td:first-child {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   justify-self: start;
   width: 64px;
   height: 64px;
@@ -451,6 +452,18 @@ tr.korea-row td:first-child {
   font-weight: 900;
   line-height: 1;
   text-align: center;
+}
+
+.result-mark.state-met {
+  font-size: 0;
+}
+
+.result-mark.state-met::before {
+  content: "";
+  width: 24px;
+  height: 24px;
+  border: 4px solid currentColor;
+  border-radius: 50%;
 }
 
 .result-mark.state-met {
