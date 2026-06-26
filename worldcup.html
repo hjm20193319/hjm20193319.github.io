@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>대한민국 32강 경우의 수</title>
+  <link rel="stylesheet" href="./worldcup.css">
+</head>
+<body>
+  <main class="dashboard" id="worldcup-dashboard">
+    <header class="topbar">
+      <a class="hub-link" href="./index.html" aria-label="허브로 돌아가기">← Hub</a>
+      <div>
+        <p class="season">2026 North America World Cup · 샘플 데이터</p>
+        <h1>대한민국 32강 경우의 수</h1>
+      </div>
+      <button class="ghost-button" id="reset-sample" type="button">샘플 초기화</button>
+    </header>
+
+    <section class="status-band" aria-label="대한민국 진출 상태">
+      <article class="status-panel primary-panel" id="qualification-panel">
+        <span class="panel-label">진출 상태</span>
+        <strong id="qualification-state">계산 중</strong>
+        <p id="qualification-summary">스코어를 변경하면 즉시 다시 계산됩니다.</p>
+      </article>
+      <article class="status-panel">
+        <span class="panel-label">진출 확률</span>
+        <div class="probability-meter" aria-label="진출 확률">
+          <span id="probability-bar"></span>
+        </div>
+        <strong id="probability-value">0%</strong>
+        <p id="probability-note">샘플 데이터 기반 추정치</p>
+      </article>
+      <article class="status-panel">
+        <span class="panel-label">충족 조건</span>
+        <strong id="condition-counter">0 / 0</strong>
+        <p id="condition-summary">필수 조건 기준</p>
+      </article>
+      <article class="status-panel korea-snapshot">
+        <span class="panel-label">대한민국 현재값</span>
+        <div class="snapshot-grid">
+          <span>순위 <strong id="korea-rank">-</strong></span>
+          <span>승점 <strong id="korea-points">-</strong></span>
+          <span>골득실 <strong id="korea-gd">-</strong></span>
+        </div>
+      </article>
+    </section>
+
+    <section class="layout-grid">
+      <section class="panel standings-panel" aria-labelledby="group-title">
+        <div class="panel-head">
+          <div>
+          <span class="panel-label">Group A</span>
+          <h2 id="group-title">대한민국 현재 조 순위</h2>
+          </div>
+          <span class="mini-chip">승점 → 골득실 → 다득점</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>순위</th>
+                <th>팀</th>
+                <th>경기</th>
+                <th>승</th>
+                <th>무</th>
+                <th>패</th>
+                <th>득</th>
+                <th>실</th>
+                <th>득실</th>
+                <th>승점</th>
+              </tr>
+            </thead>
+            <tbody id="group-standings"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel third-panel" aria-labelledby="third-title">
+        <div class="panel-head">
+          <div>
+            <span class="panel-label">Best Third Place</span>
+            <h2 id="third-title">조별 3위 순위</h2>
+          </div>
+          <span class="mini-chip">상위 8팀 32강</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>순위</th>
+                <th>조</th>
+                <th>팀</th>
+                <th>승점</th>
+                <th>득실</th>
+              </tr>
+            </thead>
+            <tbody id="third-standings"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel" aria-labelledby="matches-title">
+      <div class="panel-head">
+        <div>
+          <span class="panel-label">Live Inputs</span>
+          <h2 id="matches-title">경기별 스코어 입력</h2>
+        </div>
+        <span class="mini-chip">빈 값은 0, 음수는 0으로 처리</span>
+      </div>
+      <div class="match-grid" id="match-grid"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="scenario-title">
+      <div class="panel-head">
+        <div>
+          <span class="panel-label">Scenario Cards</span>
+          <h2 id="scenario-title">다른 조 경기 결과에 따른 경우의 수 카드</h2>
+        </div>
+        <span class="mini-chip">각 조건은 evaluate 함수로 판정</span>
+      </div>
+      <div class="scenario-grid" id="scenario-grid"></div>
+    </section>
+  </main>
+
+  <script src="./worldcup.js"></script>
+</body>
+</html>
