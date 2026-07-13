@@ -278,12 +278,23 @@
     position:relative;
     overflow:hidden;
   }
+  .fig img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+    background:#fff;
+  }
   .fig-label{
     position:absolute;
     bottom:6px; left:9px;
     font-family:var(--mono);
     font-size:0.62rem;
-    color:var(--ink-faint);
+    color:var(--ink-soft);
+    background:rgba(251,247,239,0.88);
+    border:1px solid rgba(222,208,185,0.75);
+    border-radius:999px;
+    padding:3px 7px;
   }
   .fig-ph{
     color:var(--ink-faint);
@@ -445,15 +456,18 @@
             자동차공학 전공 지식을 바탕으로 시스템의 문제를 구조적으로 파악하고, 결과를 근거로 더 나은 방향을 찾는 엔지니어를 지향합니다.
           </p>
           <div class="hero-contact">
-            <span>email@example.com</span>
-            <span>010-0000-0000</span>
-            <span>github.com/username</span>
+            <span>hjm20193319@gmail.com</span>
+            <span>010-9928-9735</span>
           </div>
           <div class="hero-tags">
-            <span class="tag">ABAQUS</span>
+            <span class="tag">모빌리티</span>
+            <span class="tag">차량 동역학</span>
+            <span class="tag">제어기 설계</span>
+            <span class="tag">차량 구조</span>
+            <span class="tag">딥러닝</span>
+            <span class="tag">자율주행</span>
             <span class="tag">Python</span>
-            <span class="tag">구조해석</span>
-            <span class="tag">복합재료</span>
+            <span class="tag">데이터 분석</span>
           </div>
         </div>
       </div>
@@ -508,9 +522,18 @@
       </div>
 
       <div class="fig-strip">
-        <div class="fig"><span class="fig-ph">Fig.1 TCS 제어기 구조도</span><span class="fig-label">Fig. 1</span></div>
-        <div class="fig"><span class="fig-ph">Fig.2 CarMaker–Simulink 연동 구조</span><span class="fig-label">Fig. 2</span></div>
-        <div class="fig"><span class="fig-ph">Fig.3 슬립율 계산 다이어그램</span><span class="fig-label">Fig. 3</span></div>
+        <div class="fig">
+          <img src="./assets/tcs-controller-detail.png" alt="TCS 제어기 상세 Simulink 구조도">
+          <span class="fig-label">Fig. 1 TCS 제어기 구조</span>
+        </div>
+        <div class="fig">
+          <img src="./assets/tcs-carmaker-simulink.png" alt="CarMaker와 Simulink를 연동한 TCS 검증 구조">
+          <span class="fig-label">Fig. 2 CarMaker-Simulink 연동</span>
+        </div>
+        <div class="fig">
+          <img src="./assets/tcs-slip-control-result.png" alt="TCS 적용 후 슬립 제어 결과 그래프">
+          <span class="fig-label">Fig. 3 슬립 제어 결과</span>
+        </div>
       </div>
     </section>
 
@@ -653,9 +676,18 @@
         </div>
       </div>
       <div class="fig-strip">
-        <div class="fig"><span class="fig-ph">Fig.1 ACC·AEBS 통합 제어 아키텍처</span><span class="fig-label">Fig. 1</span></div>
-        <div class="fig"><span class="fig-ph">Fig.2 Follow Mode 복합오차 구조</span><span class="fig-label">Fig. 2</span></div>
-        <div class="fig"><span class="fig-ph">Fig.3 3단계 AEB 순차 감속 로직</span><span class="fig-label">Fig. 3</span></div>
+        <div class="fig">
+          <img src="./assets/acc-aeb-stateflow.png" alt="ACC와 AEB 모드 전환 Stateflow 로직">
+          <span class="fig-label">Fig. 1 ACC/AEB Stateflow</span>
+        </div>
+        <div class="fig">
+          <img src="./assets/acc-aeb-control-architecture.png" alt="ACC와 AEB 통합 제어 Simulink 아키텍처">
+          <span class="fig-label">Fig. 2 통합 제어 아키텍처</span>
+        </div>
+        <div class="fig">
+          <img src="./assets/acc-aeb-set-speed-response.png" alt="ACC 설정 속도 추종 응답 그래프">
+          <span class="fig-label">Fig. 3 설정 속도 응답</span>
+        </div>
       </div>
     </section>
 
@@ -787,9 +819,18 @@
         </div>
       </div>
       <div class="fig-strip">
-        <div class="fig"><span class="fig-ph">Fig.1 1/3 Octave Band 분석 결과</span><span class="fig-label">Fig. 1</span></div>
-        <div class="fig"><span class="fig-ph">Fig.2 FRF · Phase · Coherence 그래프</span><span class="fig-label">Fig. 2</span></div>
-        <div class="fig"><span class="fig-ph">Fig.3 Mode Shape 시각화</span><span class="fig-label">Fig. 3</span></div>
+        <div class="fig">
+          <img src="./assets/nvh-octave-analysis.png" alt="NVH 소음 신호와 1/3 Octave Band 분석 결과">
+          <span class="fig-label">Fig. 1 소음 주파수 분석</span>
+        </div>
+        <div class="fig">
+          <img src="./assets/nvh-mode-shape-grid.png" alt="철판 구조물 1차부터 9차까지의 3D 모드 형상">
+          <span class="fig-label">Fig. 2 Mode Shape 전체</span>
+        </div>
+        <div class="fig">
+          <img src="./assets/nvh-mode-shape-detail.png" alt="철판 구조물 1차 3D 모드 형상 상세">
+          <span class="fig-label">Fig. 3 Mode Shape 상세</span>
+        </div>
       </div>
     </section>
 
