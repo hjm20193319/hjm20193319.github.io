@@ -325,12 +325,12 @@
     .rules li { min-height: 52px; display: grid; grid-template-columns: 34px 1fr; gap: 9px; align-items: center; color: #dfd4df; font: 900 .8rem/1.35 "Malgun Gothic",sans-serif; counter-increment: rules; }
     .rules li::before { content: counter(rules); width: 31px; height: 31px; display: grid; place-items: center; color: #030207; background: var(--yellow); font: 900 1rem Impact,sans-serif; transform: rotate(-5deg); }
 
-    .result-layer { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 24px; opacity: 0; visibility: hidden; background: radial-gradient(circle,rgba(255,107,0,.25),transparent 42%),rgba(3,2,7,.87); backdrop-filter: blur(8px); transition: .25s ease; }
-    .result-layer.is-visible { opacity: 1; visibility: visible; }
+    .result-layer { position: fixed; inset: 0; z-index: 30; display: none; place-items: center; padding: 24px; opacity: 0; visibility: hidden; background: radial-gradient(circle,rgba(255,107,0,.25),transparent 42%),rgba(3,2,7,.87); backdrop-filter: blur(8px); transition: .25s ease; }
+    .result-layer.is-visible { display: grid; opacity: 1; visibility: visible; }
     .impact-lines { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
     .impact-lines::before { content: ""; position: absolute; width: 120vmax; height: 120vmax; left: 50%; top: 50%; transform: translate(-50%,-50%); background: repeating-conic-gradient(from 4deg,rgba(255,23,79,.52) 0 1deg,transparent 1.5deg 6deg); mask-image: radial-gradient(circle,transparent 0 16%,black 17% 54%,transparent 75%); animation: spin 14s linear infinite; }
     .result-card { width: min(560px,94vw); position: relative; z-index: 2; text-align: center; transform: scale(.55) rotate(-7deg); transition: transform .62s var(--snap); }
-    .result-layer.is-visible .result-card { transform: scale(1) rotate(-1deg); }
+    .result-layer.is-visible .result-card { transform: scale(1) rotate(-1deg); animation: resultPop .62s var(--snap); }
     .result-kicker { margin: 0 0 14px; color: var(--yellow); font-size: .9rem; letter-spacing: .18em; text-shadow: 0 0 16px var(--orange); }
     .result-capsule { width: 190px; height: 86px; margin: 0 auto -27px; position: relative; z-index: 3; }
     .result-capsule::before, .result-capsule::after { content: ""; position: absolute; top: 0; width: 86px; height: 86px; border: 3px solid rgba(255,255,255,.8); border-radius: 50%; background: radial-gradient(circle at 28% 25%,#fff 0 4%,var(--result-color,var(--hot)) 8% 58%,#52051a 78%); box-shadow: 0 0 28px var(--result-color,var(--hot)); }
@@ -354,6 +354,7 @@
     @keyframes shake { 25% { transform: translate(2px,-1px) rotate(.25deg); } 75% { transform: translate(-2px,1px) rotate(-.25deg); } }
     @keyframes drop { 0% { opacity: 0; transform: translateY(-240px) scale(.75); } 58% { opacity: 1; transform: translateY(0) scale(1.06) rotate(420deg); } 76% { transform: translateY(-18px) scale(.98) rotate(470deg); } 100% { opacity: 1; transform: translateY(0) rotate(510deg); } }
     @keyframes open { 45% { transform: scale(1.28) rotate(-8deg); filter: brightness(2); } 100% { transform: scale(1.8); filter: brightness(3); opacity: 0; } }
+    @keyframes resultPop { from { transform: scale(.55) rotate(-7deg); } to { transform: scale(1) rotate(-1deg); } }
     @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes burst { from { opacity: 1; transform: translate(-50%,-50%) scaleY(.5); } to { opacity: 0; transform: translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scaleY(1.4) rotate(430deg); } }
 
@@ -370,7 +371,8 @@
       .intro-copy { width: min(580px,100%); margin: 18px auto 0; }
       .candidate-box { width: min(460px,100%); margin: 18px auto 4px; }
       .candidate-list { justify-content: center; }
-      .selector { width: min(640px,100%); margin: auto; }
+      .game, .selector, .machine-zone { width: 100%; max-width: 100%; min-width: 0; }
+      .selector { margin: auto; }
       .machine-zone { min-height: 570px; }
     }
     @media (max-width:560px) {
@@ -387,10 +389,11 @@
       .workout-options { grid-template-columns: repeat(2,1fr); gap: 8px; }
       .workout-button { min-height: 64px; font-size: 1.12rem; }
       .machine-zone { min-height: 465px; padding-top: 0; }
-      .machine { width: min(390px,104vw); transform: scale(.9); }
+      .machine { width: min(390px,100%); transform: none; }
       .capsule { width: clamp(45px,14vw,60px); }
       .machine-base { min-height: 116px; padding: 31px 63px 23px 27px; }
       .draw-button { min-height: 60px; font-size: .98rem; }
+      .lever { right: 18px; }
       .chute { right: 4%; }
       .status-line { bottom: -45px; }
       .result-actions { flex-direction: column; }
@@ -399,7 +402,7 @@
     @media (max-width:380px) {
       .brand span:last-child { display: none; }
       .machine-zone { min-height: 440px; }
-      .machine { width: 370px; transform: scale(.84); }
+      .machine { width: 100%; transform: none; }
     }
     @media (prefers-reduced-motion:reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
