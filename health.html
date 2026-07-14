@@ -325,11 +325,11 @@
     .rules li { min-height: 52px; display: grid; grid-template-columns: 34px 1fr; gap: 9px; align-items: center; color: #dfd4df; font: 900 .8rem/1.35 "Malgun Gothic",sans-serif; counter-increment: rules; }
     .rules li::before { content: counter(rules); width: 31px; height: 31px; display: grid; place-items: center; color: #030207; background: var(--yellow); font: 900 1rem Impact,sans-serif; transform: rotate(-5deg); }
 
-    .result-layer { position: fixed; inset: 0; z-index: 30; display: none; place-items: center; padding: 24px; opacity: 0; visibility: hidden; background: radial-gradient(circle,rgba(255,107,0,.25),transparent 42%),rgba(3,2,7,.87); backdrop-filter: blur(8px); transition: .25s ease; }
+    .result-layer { position: fixed; inset: 0; z-index: 30; display: none; place-items: center; width: 100%; max-width: 100%; padding: 24px; overflow: hidden; opacity: 0; visibility: hidden; background: radial-gradient(circle,rgba(255,107,0,.25),transparent 42%),rgba(3,2,7,.87); backdrop-filter: blur(8px); transition: .25s ease; }
     .result-layer.is-visible { display: grid; opacity: 1; visibility: visible; }
     .impact-lines { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
     .impact-lines::before { content: ""; position: absolute; width: 120vmax; height: 120vmax; left: 50%; top: 50%; transform: translate(-50%,-50%); background: repeating-conic-gradient(from 4deg,rgba(255,23,79,.52) 0 1deg,transparent 1.5deg 6deg); mask-image: radial-gradient(circle,transparent 0 16%,black 17% 54%,transparent 75%); animation: spin 14s linear infinite; }
-    .result-card { width: min(560px,94vw); position: relative; z-index: 2; text-align: center; transform: scale(.55) rotate(-7deg); transition: transform .62s var(--snap); }
+    .result-card { width: min(560px,100%); position: relative; z-index: 2; text-align: center; transform: scale(.55) rotate(-7deg); transition: transform .62s var(--snap); }
     .result-layer.is-visible .result-card { transform: scale(1) rotate(-1deg); animation: resultPop .62s var(--snap); }
     .result-kicker { margin: 0 0 14px; color: var(--yellow); font-size: .9rem; letter-spacing: .18em; text-shadow: 0 0 16px var(--orange); }
     .result-capsule { width: 190px; height: 86px; margin: 0 auto -27px; position: relative; z-index: 3; }
@@ -396,6 +396,7 @@
       .lever { right: 18px; }
       .chute { right: 4%; }
       .status-line { bottom: -45px; }
+      .result-layer { padding: 16px; }
       .result-actions { flex-direction: column; }
       .again-button, .close-result { width: 100%; }
     }
