@@ -1,3 +1,11 @@
 .chrome-test/
 .chrome-test-example/
 .chrome-test-kakao/
+
+# Local portfolio working files (excluded from public uploads)
+portfolio*.html
+portfolio*.pptx
+assets/profile-photo.jpg
+assets/acc-aeb-*.png
+assets/nvh-*.png
+assets/tcs-*.png
